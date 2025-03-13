@@ -1,0 +1,9 @@
+{
+    "morgan" : {
+        "type" : "dev",
+        "stream" : "console"
+    },
+    "winston" : {
+        "level": "debug"
+    }
+}
