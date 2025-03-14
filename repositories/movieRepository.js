@@ -20,6 +20,26 @@ class MovieRepository {
         }
         return movie;
     }
+
+    async getMostRatedMovies(filter) {
+        const moviesCollection = MovieRepository.db.collection("movies");
+        const amount = filter.amount || 10;
+        delete filter.amount;
+
+        const query = {...filter, "imdb.rating": {$ne: null, $nin: [""]}}
+
+        return moviesCollection.find(query)
+            .project({ _id: 1, title: 1, "imdb.rating": 1, "imdb.id": 1 })
+            .map(movie => ({
+                _id:movie._id,
+                title:movie.title,
+                imdbId:movie.imdb.id,
+                rating:movie.imdb.rating
+            }))
+            .sort({ "imdb.rating": -1 })
+            .limit(amount)
+            .toArray();
+    }
 }
 
 const movieRepository = new MovieRepository();

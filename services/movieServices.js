@@ -8,6 +8,10 @@ class MovieService {
     async getMovieById(movieId) {
         return await movieRepository.getMovieById(movieId);
     }
+
+    async getMostRatedMovies(filter) {
+        return await movieRepository.getMostRatedMovies(filter);
+    }
 }
 
 const movieService = new MovieService();
