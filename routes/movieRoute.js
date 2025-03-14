@@ -26,4 +26,14 @@ movieRoute.get("/:id", async (req, res) => {
     res.send(movie);
 })
 
+movieRoute.post("/rating", async (req, res) => {
+    appLogger.info("Post new rate requested");
+    const ratingInfo = req.body;
+    const changedMovies = await movieService.addRate(ratingInfo);
+    res.status(200).json({
+        message: "Rating updated successfully",
+        modifiedCount: changedMovies
+    });
+})
+
 export default movieRoute;
