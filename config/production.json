@@ -1,7 +1,7 @@
 {
     "morgan" : {
         "type" : "combined",
-        "stream" : ".logs/api.log"
+        "stream" : "logs/api.log"
     },
     "winston" : {
         "level": "info"

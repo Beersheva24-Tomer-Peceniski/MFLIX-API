@@ -8,7 +8,7 @@ const movieRoute = express.Router();
 movieRoute.get("/:id", async (req, res) => {
     appLogger.info("Get movie from ID route requested");
     const movieId = new ObjectId(req.params.id);
-    const movie = await movieService.getMovieById(movieId) 
+    const movie = await movieService.getMovieById(movieId)
     res.send(movie);
 })
 
