@@ -30,14 +30,32 @@ class MovieRepository {
 
         return moviesCollection.find(query)
             .project({ _id: 1, title: 1, "imdb.rating": 1, "imdb.id": 1 })
+            .sort({ "imdb.rating": -1 })
+            .limit(amount)
             .map(movie => ({
                 _id:movie._id,
                 title:movie.title,
                 imdbId:movie.imdb.id,
                 rating:movie.imdb.rating
             }))
-            .sort({ "imdb.rating": -1 })
+            .toArray();
+    }
+
+    async getMostCommentedMovies(filter) {
+        const moviesCollection = MovieRepository.db.collection("movies");
+        const amount = filter.amount || 10;
+        delete filter.amount;
+
+        return moviesCollection.find(filter)
+            .project({ _id: 1, title: 1, "imdb.id": 1, num_mflix_comments: 1})
+            .sort({ num_mflix_comments: -1 })
             .limit(amount)
+            .map(movie => ({
+                _id:movie._id,
+                title:movie.title,
+                imdbId:movie.imdb.id,
+                comments:movie.num_mflix_comments
+            }))
             .toArray();
     }
 }

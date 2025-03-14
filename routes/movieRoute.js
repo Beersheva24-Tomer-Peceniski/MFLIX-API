@@ -12,6 +12,13 @@ movieRoute.get("/most-rated", async (req, res) => {
     res.send(movies);
 })
 
+movieRoute.get("/most-commented", async (req, res) => {
+    appLogger.info("Get most commented movies requested");
+    const filters = req.body;
+    const movies = await movieService.getMostCommentedMovies(filters);
+    res.send(movies);
+})
+
 movieRoute.get("/:id", async (req, res) => {
     appLogger.info("Get movie from ID requested");
     const movieId = new ObjectId(req.params.id);

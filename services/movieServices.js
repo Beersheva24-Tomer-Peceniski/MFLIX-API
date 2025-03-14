@@ -12,6 +12,10 @@ class MovieService {
     async getMostRatedMovies(filter) {
         return await movieRepository.getMostRatedMovies(filter);
     }
+
+    async getMostCommentedMovies(filter) {
+        return await movieRepository.getMostCommentedMovies(filter);
+    }
 }
 
 const movieService = new MovieService();
