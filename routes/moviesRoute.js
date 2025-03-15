@@ -1,6 +1,6 @@
 import express from "express";
 import { ObjectId } from "mongodb";
-import moviesService from "../services/moviesServices.js";
+import moviesService from "../services/moviesService.js";
 import appLogger from "../logger/appLogger.js";
 
 const moviesRoute = express.Router();
