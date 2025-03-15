@@ -30,6 +30,12 @@ class CommentService {
         const updatedComment = await commentsRepository.updateComment(comment);
         return updatedComment;
     }
+
+    async deleteCommentById(commentId) {
+        commentId = new ObjectId(commentId);
+        const deletedComment = await commentsRepository.deleteCommentById(commentId);
+        return deletedComment;
+    }
 }
 
 const commentsService = new CommentService();

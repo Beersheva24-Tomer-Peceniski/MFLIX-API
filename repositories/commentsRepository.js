@@ -17,6 +17,13 @@ class CommentRepository {
         return comments;
     }
 
+    async deleteCommentById(commentId) {
+        const commentsCollection = CommentRepository.db.collection("comments");
+        const comment = await commentsCollection.findOne({ _id: commentId });
+        const { deletedCount } = await commentsCollection.deleteOne({ _id: commentId });
+        return deletedCount == 1 ? comment : null;
+    }
+
     async addComment(comment) {
         const commentsCollection = CommentRepository.db.collection("comments");
         const { insertedId } = await commentsCollection.insertOne(comment)
@@ -28,10 +35,10 @@ class CommentRepository {
         const { modifiedCount } = commentsCollection.updateOne({ _id: comment.id, email: comment.email },
             [{ $set: { "text": comment.text } }]
         );
-        if(modifiedCount == 0) {
+        if (modifiedCount == 0) {
             throw new Error("Comment not found")
         }
-        return await commentsCollection.findOne({_id : comment.id})
+        return await commentsCollection.findOne({ _id: comment.id })
     }
 }
 

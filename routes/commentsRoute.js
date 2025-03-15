@@ -24,15 +24,21 @@ commentsRoute.get("/", async (req, res) => {
 })
 
 commentsRoute.post("/", async (req, res) => {
-    appLogger.info("Post new comment requested")
+    appLogger.info("Post new comment requested");
     const comment = await commentsService.addComment(req.body);
     res.send(comment);
 })
 
 commentsRoute.put("/", async (req, res) => {
-    appLogger.info("Update comment requested")
+    appLogger.info("Update comment requested");
     const comment = await commentsService.updateComment(req.body);
     res.send(comment);
+})
+
+commentsRoute.delete("/:id", async (req, res) => {
+    appLogger.info("Delete comment requested");
+    const deletedComment = await commentsService.deleteCommentById(req.params.id);
+    res.send(deletedComment);
 })
 
 export default commentsRoute;
