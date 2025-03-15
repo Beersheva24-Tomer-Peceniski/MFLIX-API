@@ -1,16 +1,7 @@
-import connectDB from "../database/database.js";
+import db from "../database/database.js";
 
 class MovieRepository {
-    static db;
-
-    static {
-        (async () => {
-            MovieRepository.db = await connectDB();
-            if (!MovieRepository.db) {
-                throw new Error("Database connection failed");
-            }
-        })()
-    }
+    static db = db;
 
     async getMovieById(movieId) {
         const moviesCollection = MovieRepository.db.collection("movies");

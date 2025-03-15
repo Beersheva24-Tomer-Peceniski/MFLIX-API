@@ -1,16 +1,7 @@
-import connectDB from "../database/database.js";
+import db from "../database/database.js";
 
 class CommentRepository {
-    static db;
-
-    static {
-        (async () => {
-            CommentRepository.db = await connectDB();
-            if (!CommentRepository.db) {
-                throw new Error("Database connection failed");
-            }
-        })()
-    }
+    static db = db;
 
     async getComments(movieId) {
         const commentsCollection = CommentRepository.db.collection("comments");

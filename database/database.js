@@ -18,4 +18,6 @@ async function connectDB() {
     }
 }
 
-export default connectDB; 
+const db = await connectDB();
+
+export default db;
