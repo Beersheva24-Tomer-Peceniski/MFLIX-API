@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import moviesRepository from "../repositories/moviesRepository.js"
 
 class MovieService {
@@ -6,7 +7,8 @@ class MovieService {
     }
 
     async getMovieById(movieId) {
-        return await moviesRepository.getMovieById(movieId);
+        const movieIdObjectId = new ObjectId(movieId);
+        return await moviesRepository.getMovieById(movieIdObjectId);
     }
 
     async getMostRatedMovies(filter) {
