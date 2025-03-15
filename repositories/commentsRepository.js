@@ -14,7 +14,18 @@ class CommentRepository {
     async addComment(comment) {
         const commentsCollection = CommentRepository.db.collection("comments");
         const { insertedId } = await commentsCollection.insertOne(comment)
-        return await commentsCollection.findOne({_id : insertedId });
+        return await commentsCollection.findOne({ _id: insertedId });
+    }
+
+    async updateComment(comment) {
+        const commentsCollection = CommentRepository.db.collection("comments");
+        const { modifiedCount } = commentsCollection.updateOne({ _id: comment.id, email: comment.email },
+            [{ $set: { "text": comment.text } }]
+        );
+        if(modifiedCount == 0) {
+            throw new Error("Comment not found")
+        }
+        return await commentsCollection.findOne({_id : comment.id})
     }
 }
 

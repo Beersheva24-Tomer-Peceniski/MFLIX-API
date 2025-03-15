@@ -20,6 +20,12 @@ class CommentService {
         moviesRepository.addCommentsNumber(comment.movie_id);
         return newComment;
     }
+
+    async updateComment(comment) {
+        comment.id = new ObjectId(comment.id);
+        const updatedComment = await commentsRepository.updateComment(comment);
+        return updatedComment;
+    }
 }
 
 const commentsService = new CommentService();

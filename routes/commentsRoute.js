@@ -16,4 +16,10 @@ commentsRoute.post("/", async (req, res) => {
     res.send(comment);
 })
 
+commentsRoute.put("/", async (req, res) => {
+    appLogger.info("Update comment requested")
+    const comment = await commentsService.updateComment(req.body);
+    res.send(comment);
+})
+
 export default commentsRoute;
