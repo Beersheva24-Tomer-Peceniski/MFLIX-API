@@ -4,10 +4,23 @@ import appLogger from "../logger/appLogger.js";
 
 const commentsRoute = express.Router();
 
-commentsRoute.get("/:id", async (req, res) => {
-    appLogger.info("Get comments requested");
-    const comments = await commentsService.getComments(req.params.id);
-    res.send(comments);
+commentsRoute.get("/", async (req, res) => {
+    let result;
+    let status;
+    if (req.query.movieId) {
+        appLogger.info("Get comments by movie ID requested");
+        result = await commentsService.getCommentsByMovieId(req.query.movieId);
+        status = 200
+    } else if (req.query.email) {
+        appLogger.info("Get comments by email requested");
+        result = await commentsService.getCommentsByEmail(req.query.email);
+        status = 200
+    } else {
+        appLogger.info("Get comments requested");
+        result = {error: "Missing required query parameters: movieId or email"};
+        status = 400;
+    }
+    res.status(status).send(result);
 })
 
 commentsRoute.post("/", async (req, res) => {

@@ -8,9 +8,13 @@ class CommentService {
         this.commentsRepository = commentsRepository;
     }
 
-    async getComments(movieId) {
+    async getCommentsByMovieId(movieId) {
         const movieIdObjectId = new ObjectId(movieId);
-        return await commentsRepository.getComments(movieIdObjectId);
+        return await commentsRepository.getCommentsByMovieId(movieIdObjectId);
+    }
+
+    async getCommentsByEmail(email) {
+        return await commentsRepository.getCommentsByEmail(email);
     }
 
     async addComment(comment) {

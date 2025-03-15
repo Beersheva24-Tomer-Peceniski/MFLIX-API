@@ -3,11 +3,17 @@ import db from "../database/database.js";
 class CommentRepository {
     static db = db;
 
-    async getComments(movieId) {
+    async getCommentsByMovieId(movieId) {
         const commentsCollection = CommentRepository.db.collection("comments");
         const comments = await commentsCollection.find({ movie_id: movieId })
             .project({ email: 1, text: 1, _id: 0 })
             .toArray();
+        return comments;
+    }
+
+    async getCommentsByEmail(email) {
+        const commentsCollection = CommentRepository.db.collection("comments");
+        const comments = await commentsCollection.find({ email: email }).toArray();
         return comments;
     }
 
