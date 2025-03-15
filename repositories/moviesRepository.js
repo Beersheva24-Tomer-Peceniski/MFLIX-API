@@ -21,6 +21,16 @@ class MovieRepository {
         return movie;
     }
 
+    addCommentsNumber(movieId) {
+        const moviesCollection = MovieRepository.db.collection("movies");
+        moviesCollection.updateOne({ _id: movieId },
+            [{
+                $set:
+                    { "num_mflix_comments": { $add: ["$num_mflix_comments", 1] } }
+            }]
+        );
+    }
+
     async getMostRatedMovies(filter) {
         const moviesCollection = MovieRepository.db.collection("movies");
         const amount = filter.amount || 10;
@@ -89,7 +99,7 @@ class MovieRepository {
                 }
             }]
         )
-    return modifiedCount;
+        return modifiedCount;
     }
 }
 
