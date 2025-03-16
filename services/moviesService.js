@@ -16,6 +16,13 @@ class MovieService {
     }
 
     async getMostCommentedMovies(filter) {
+        if(filter.actor) {
+            filter.cast = filter.actor;
+            delete filter.actor;
+        }
+        if(filter.languages) {
+            filter.languages = {$all: filter.languages}
+        }
         return await moviesRepository.getMostCommentedMovies(filter);
     }
 
