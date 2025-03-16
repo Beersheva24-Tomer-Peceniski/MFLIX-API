@@ -1,7 +1,8 @@
 import express from "express";
-import { ObjectId } from "mongodb";
 import moviesService from "../services/moviesService.js";
 import appLogger from "../logger/appLogger.js";
+import { movieIdSchema } from "../validation_schemas/schemas.js";
+import { validator } from "../middleware/validation.js";
 
 const moviesRoute = express.Router();
 
@@ -19,7 +20,7 @@ moviesRoute.get("/most-commented", async (req, res) => {
     res.send(movies);
 })
 
-moviesRoute.get("/:id", async (req, res) => {
+moviesRoute.get("/:id",validator(movieIdSchema, "params") ,async (req, res) => {
     appLogger.info("Get movie from ID requested");
     const movie = await moviesService.getMovieById(req.params.id)
     res.send(movie);
