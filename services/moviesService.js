@@ -23,6 +23,9 @@ class MovieService {
         if(filter.languages) {
             filter.languages = {$all: filter.languages}
         }
+        if(filter.genres) {
+            filter.genres = {$all: filter.genres}
+        }
         return await moviesRepository.getMostCommentedMovies(filter);
     }
 
