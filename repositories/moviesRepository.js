@@ -62,7 +62,7 @@ class MovieRepository {
     }
 
     async addRate(rateInfo) {
-        const { id, rate } = rateInfo;
+        const { id, rating } = rateInfo;
         const moviesCollection = MovieRepository.db.collection("movies");
 
         const { modifiedCount } = await moviesCollection.updateMany(
@@ -72,10 +72,10 @@ class MovieRepository {
                     "imdb.rating": {
                         $cond: {
                             if: { $eq: ["$imdb.votes", ""] },
-                            then: rate,
+                            then: rating,
                             else: {
                                 $divide: [
-                                    { $add: [{ $multiply: ["$imdb.rating", "$imdb.votes"] }, rate] },
+                                    { $add: [{ $multiply: ["$imdb.rating", "$imdb.votes"] }, rating] },
                                     { $add: ["$imdb.votes", 1] }
                                 ]
                             }

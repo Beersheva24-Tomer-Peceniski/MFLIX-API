@@ -13,3 +13,14 @@ export const filterMoviesSchema = Joi.object({
     languages : Joi.array().items(Joi.string()).optional(),
     amount : Joi.number().integer().optional()
 })
+
+export const ratingMovieSchema = Joi.object({
+    id: Joi.number().integer().required(),
+    rating: Joi.number().min(1).max(10).required()
+})
+
+export default {
+    movieIdSchema,
+    filterMoviesSchema,
+    ratingMovieSchema
+}

@@ -1,25 +1,25 @@
 import express from "express";
 import moviesService from "../services/moviesService.js";
 import appLogger from "../logger/appLogger.js";
-import { movieIdSchema, filterMoviesSchema } from "../validation-schemas/schemas.js";
+import movieSchemas from "../validation-schemas/movie-schemas.js";
 import { validator } from "../middleware/validation.js";
 
 const moviesRoute = express.Router();
 
-moviesRoute.get("/most-rated", validator(filterMoviesSchema), async (req, res) => {
+moviesRoute.get("/most-rated", validator(movieSchemas.filterMoviesSchema), async (req, res) => {
     appLogger.info("Get most rated movies requested");
     const movies = await moviesService.getMostRatedMovies(req.body);
     res.send(movies);
 })
 
-moviesRoute.get("/most-commented", validator(filterMoviesSchema), async (req, res) => {
+moviesRoute.get("/most-commented", validator(movieSchemas.filterMoviesSchema), async (req, res) => {
     appLogger.info("Get most commented movies requested");
     const filters = req.body;
     const movies = await moviesService.getMostCommentedMovies(filters);
     res.send(movies);
 })
 
-moviesRoute.get("/:id", validator(movieIdSchema, "params"), async (req, res, next) => {
+moviesRoute.get("/:id", validator(movieSchemas.movieIdSchema, "params"), async (req, res, next) => {
     try {
         appLogger.info("Get movie from ID requested");
         const movie = await moviesService.getMovieById(req.params.id)
@@ -29,7 +29,7 @@ moviesRoute.get("/:id", validator(movieIdSchema, "params"), async (req, res, nex
     }
 })
 
-moviesRoute.post("/rating", async (req, res) => {
+moviesRoute.post("/rating", validator(movieSchemas.ratingMovieSchema), async (req, res) => {
     appLogger.info("Post new rate requested");
     const ratingInfo = req.body;
     const changedMovies = await moviesService.addRate(ratingInfo);
