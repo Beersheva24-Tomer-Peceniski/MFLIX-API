@@ -1,4 +1,5 @@
 import db from "../database/database.js";
+import { createError } from "../errors/errors.js";
 
 class MovieRepository {
     static db = db;
@@ -7,7 +8,7 @@ class MovieRepository {
         const moviesCollection = MovieRepository.db.collection("movies");
         const movie = await moviesCollection.findOne({ _id: movieId });
         if (!movie) {
-            throw new Error("There is no movie with this ID");
+            throw createError(400, "There is no movie with this ID");
         }
         return movie;
     }

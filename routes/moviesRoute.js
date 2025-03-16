@@ -20,10 +20,14 @@ moviesRoute.get("/most-commented", async (req, res) => {
     res.send(movies);
 })
 
-moviesRoute.get("/:id",validator(movieIdSchema, "params") ,async (req, res) => {
-    appLogger.info("Get movie from ID requested");
-    const movie = await moviesService.getMovieById(req.params.id)
-    res.send(movie);
+moviesRoute.get("/:id", validator(movieIdSchema, "params"), async (req, res, next) => {
+    try {
+        appLogger.info("Get movie from ID requested");
+        const movie = await moviesService.getMovieById(req.params.id)
+        res.send(movie);
+    } catch (e) {
+        next(e);
+    }
 })
 
 moviesRoute.post("/rating", async (req, res) => {
