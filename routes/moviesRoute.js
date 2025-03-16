@@ -6,13 +6,13 @@ import { validator } from "../middleware/validation.js";
 
 const moviesRoute = express.Router();
 
-moviesRoute.get("/most-rated", async (req, res) => {
+moviesRoute.get("/most-rated", validator(mostRatedMoviesSchema), async (req, res) => {
     appLogger.info("Get most rated movies requested");
     const movies = await moviesService.getMostRatedMovies(req.body);
     res.send(movies);
 })
 
-moviesRoute.get("/most-commented", validator(mostRatedMoviesSchema), async (req, res) => {
+moviesRoute.get("/most-commented", async (req, res) => {
     appLogger.info("Get most commented movies requested");
     const filters = req.body;
     const movies = await moviesService.getMostCommentedMovies(filters);

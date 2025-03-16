@@ -12,20 +12,20 @@ class MovieService {
     }
 
     async getMostRatedMovies(filter) {
+        if (filter.actor) {
+            filter.cast = filter.actor;
+            delete filter.actor;
+        }
+        if (filter.languages) {
+            filter.languages = { $all: filter.languages }
+        }
+        if (filter.genres) {
+            filter.genres = { $all: filter.genres }
+        }
         return await moviesRepository.getMostRatedMovies(filter);
     }
 
     async getMostCommentedMovies(filter) {
-        if(filter.actor) {
-            filter.cast = filter.actor;
-            delete filter.actor;
-        }
-        if(filter.languages) {
-            filter.languages = {$all: filter.languages}
-        }
-        if(filter.genres) {
-            filter.genres = {$all: filter.genres}
-        }
         return await moviesRepository.getMostCommentedMovies(filter);
     }
 
