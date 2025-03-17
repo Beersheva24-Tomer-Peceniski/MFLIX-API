@@ -60,10 +60,14 @@ commentsRoute.put("/", validator(commentSchemas.updateCommentSchema), async (req
     }
 })
 
-commentsRoute.delete("/:id", async (req, res) => {
+commentsRoute.delete("/:commentId", validator(commentSchemas.commentIdSchema, "params"), async (req, res, next) => {
     appLogger.info("Delete comment requested");
-    const deletedComment = await commentsService.deleteCommentById(req.params.id);
-    res.send(deletedComment);
+    try {
+        const deletedComment = await commentsService.deleteCommentById(req.params.commentId);
+        res.send(deletedComment);
+    } catch (error) {
+        next(error)
+    }
 })
 
 export default commentsRoute;

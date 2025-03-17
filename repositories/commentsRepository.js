@@ -1,6 +1,4 @@
 import db from "../database/database.js";
-import { createError } from "../errors/errors.js";
-
 class CommentRepository {
     static db = db;
 
@@ -22,7 +20,7 @@ class CommentRepository {
         const commentsCollection = CommentRepository.db.collection("comments");
         const comment = await commentsCollection.findOne({ _id: commentId });
         const { deletedCount } = await commentsCollection.deleteOne({ _id: commentId });
-        return deletedCount == 1 ? comment : null;
+        return deletedCount == 0 ? null : comment;
     }
 
     async addComment(comment) {

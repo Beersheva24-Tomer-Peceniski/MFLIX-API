@@ -29,7 +29,7 @@ class CommentService {
     async updateComment(comment) {
         comment.id = new ObjectId(comment.commentId);
         const updatedComment = await commentsRepository.updateComment(comment);
-        if(updatedComment == null) {
+        if(!updatedComment) {
             throw createError(400, "Comment not found");
         }
         return updatedComment;
@@ -38,6 +38,9 @@ class CommentService {
     async deleteCommentById(commentId) {
         commentId = new ObjectId(commentId);
         const deletedComment = await commentsRepository.deleteCommentById(commentId);
+        if(!deletedComment) {
+            throw createError(400, "Comment not found");
+        }
         return deletedComment;
     }
 }

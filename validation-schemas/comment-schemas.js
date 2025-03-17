@@ -17,8 +17,13 @@ export const updateCommentSchema = Joi.object({
     text: Joi.string().required()
 })
 
+export const commentIdSchema = Joi.object({
+    commentId: Joi.string().length(24).hex().required()
+})
+
 export default {
     emailSchema,
     addCommentSchema,
-    updateCommentSchema
+    updateCommentSchema,
+    commentIdSchema
 }
