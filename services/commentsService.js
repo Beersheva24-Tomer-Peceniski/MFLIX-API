@@ -2,6 +2,7 @@ import { ObjectId } from "mongodb";
 import commentsRepository from "../repositories/commentsRepository.js";
 import moviesRepository from "../repositories/moviesRepository.js";
 import { DateTime } from "luxon";
+import { createError } from "../errors/errors.js";
 
 class CommentService {
     constructor() {
@@ -18,7 +19,7 @@ class CommentService {
     }
 
     async addComment(comment) {
-        comment.movie_id = new ObjectId(comment.movie_id);
+        comment.movieId = new ObjectId(comment.movieId);
         comment.date = DateTime.utc().toFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZ");
         const newComment = await commentsRepository.addComment(comment);
         moviesRepository.addCommentsNumber(comment.movie_id);
@@ -26,14 +27,20 @@ class CommentService {
     }
 
     async updateComment(comment) {
-        comment.id = new ObjectId(comment.id);
+        comment.id = new ObjectId(comment.commentId);
         const updatedComment = await commentsRepository.updateComment(comment);
+        if(!updatedComment) {
+            throw createError(400, "Comment not found");
+        }
         return updatedComment;
     }
 
     async deleteCommentById(commentId) {
         commentId = new ObjectId(commentId);
         const deletedComment = await commentsRepository.deleteCommentById(commentId);
+        if(!deletedComment) {
+            throw createError(400, "Comment not found");
+        }
         return deletedComment;
     }
 }
