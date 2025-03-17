@@ -4,6 +4,7 @@ import appLogger from "../logger/appLogger.js";
 import { movieIdSchema } from "../validation-schemas/movie-schemas.js";
 import { createError } from "../errors/errors.js";
 import commentSchemas from "../validation-schemas/comment-schemas.js";
+import { validator } from "../middleware/validation.js";
 
 const commentsRoute = express.Router();
 
@@ -43,7 +44,7 @@ async function getCommentsByMovieId(movieId) {
     return { status: 200, result: await commentsService.getCommentsByMovieId(movieId) }
 }
 
-commentsRoute.post("/", async (req, res) => {
+commentsRoute.post("/", validator(commentSchemas.addCommentSchema), async (req, res) => {
     appLogger.info("Post new comment requested");
     const comment = await commentsService.addComment(req.body);
     res.send(comment);
