@@ -1,4 +1,5 @@
 import db from "../database/database.js";
+import { createError } from "../errors/errors.js";
 
 class CommentRepository {
     static db = db;
@@ -32,13 +33,10 @@ class CommentRepository {
 
     async updateComment(comment) {
         const commentsCollection = CommentRepository.db.collection("comments");
-        const { modifiedCount } = commentsCollection.updateOne({ _id: comment.id, email: comment.email },
+        const { modifiedCount } = await commentsCollection.updateOne({ _id: comment.id, email: comment.email },
             [{ $set: { "text": comment.text } }]
         );
-        if (modifiedCount == 0) {
-            throw new Error("Comment not found")
-        }
-        return await commentsCollection.findOne({ _id: comment.id })
+        return modifiedCount == 0 ? null : await commentsCollection.findOne({ _id: comment.id })
     }
 }
 

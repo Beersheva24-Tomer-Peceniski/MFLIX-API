@@ -50,10 +50,14 @@ commentsRoute.post("/", validator(commentSchemas.addCommentSchema), async (req, 
     res.send(comment);
 })
 
-commentsRoute.put("/", async (req, res) => {
+commentsRoute.put("/", validator(commentSchemas.updateCommentSchema), async (req, res, next) => {
     appLogger.info("Update comment requested");
-    const comment = await commentsService.updateComment(req.body);
-    res.send(comment);
+    try {
+        const comment = await commentsService.updateComment(req.body);
+        res.send(comment);
+    } catch (error) {
+        next(error)
+    }
 })
 
 commentsRoute.delete("/:id", async (req, res) => {

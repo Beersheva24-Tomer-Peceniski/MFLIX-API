@@ -1,7 +1,5 @@
 import Joi from "joi";
 
-const currentYear = new Date().getFullYear();
-
 export const emailSchema = Joi.object({
     email: Joi.string().email().required()
 })
@@ -13,7 +11,14 @@ export const addCommentSchema = Joi.object({
     name: Joi.string().required()
 })
 
+export const updateCommentSchema = Joi.object({
+    commentId: Joi.string().length(24).hex().required(),
+    email: Joi.string().email().required(),
+    text: Joi.string().required()
+})
+
 export default {
     emailSchema,
-    addCommentSchema
+    addCommentSchema,
+    updateCommentSchema
 }
