@@ -44,6 +44,12 @@ class AccountsRepository {
         );
         return modifiedCount != 0;
     }
+
+    async deleteAccount(email) {
+        const accountsCollection = db.collection("accounts");
+        const { deletedCount } = await accountsCollection.deleteOne({ email });
+        return deletedCount != 0;
+    }
 }
 
 const accountsRepository = new AccountsRepository();

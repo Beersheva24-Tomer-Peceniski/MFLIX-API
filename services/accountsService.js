@@ -90,6 +90,18 @@ class AccountService {
         return "Account successfully unblocked"
     }
 
+    async deleteAccount(email) {
+        const oldAccount = await accountsRepository.findByEmail(email)
+        if (!oldAccount) {
+            throw createError(404, "There is no account with the inserted email")
+        }
+        const deleted = await accountsRepository.deleteAccount(email);
+        if(!deleted) {
+            throw createError(500, "It was not possible to delete account");
+        }
+        return "Account successfully deleted"
+    }
+
 }
 
 const accountsService = new AccountService();

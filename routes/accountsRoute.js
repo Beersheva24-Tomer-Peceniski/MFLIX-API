@@ -72,4 +72,14 @@ accountsRoute.put("/unblock/:email", validator(accountSchemas.emailSchema, "para
     }
 })
 
+accountsRoute.delete("/:email", validator(accountSchemas.emailSchema, "params"), async (req, res, next) => {
+    appLogger.info("Delete Account requested")
+    try {
+        const response = await accountsService.deleteAccount(req.params.email)
+        res.send(response)
+    } catch (error) {
+        next(error)
+    }
+})
+
 export default accountsRoute;
