@@ -7,6 +7,11 @@ class AccountsRepository {
         const result = await accountsCollection.insertOne(user);
         return { _id: result.insertedId, ...user };
     }
+
+    findByEmail(email) {
+        const accountsCollection = db.collection("accounts");
+        return accountsCollection.findOne({email});
+    }
 }
 
 const accountsRepository = new AccountsRepository();
