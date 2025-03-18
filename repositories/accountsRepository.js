@@ -28,6 +28,22 @@ class AccountsRepository {
         );
         return modifiedCount == 0 ? null : accountsCollection.findOne({ email: account.email })
     }
+
+    async blockAccount(email) {
+        const accountsCollection = db.collection("accounts");
+        const { modifiedCount } = await accountsCollection.updateOne({ email },
+            { $set: { blocked: true } }
+        );
+        return modifiedCount != 0;
+    }
+
+    async unblockAccount(email) {
+        const accountsCollection = db.collection("accounts");
+        const { modifiedCount } = await accountsCollection.updateOne({ email },
+            { $set: { blocked: false } }
+        );
+        return modifiedCount != 0;
+    }
 }
 
 const accountsRepository = new AccountsRepository();

@@ -6,7 +6,7 @@ import { validator } from "../middleware/validation.js";
 
 const accountsRoute = express.Router();
 
-accountsRoute.get("/:email", validator(accountSchemas.getByEmailSchema, "params"), async (req, res) => {
+accountsRoute.get("/:email", validator(accountSchemas.emailSchema, "params"), async (req, res) => {
     appLogger.info("Get account by email requested");
     const user = await accountsService.fyndByEmail(req.params.email);
     res.send(user);
@@ -47,6 +47,26 @@ accountsRoute.put("/password", validator(accountSchemas.updatePasswordSchema), a
     try {
         const updatedAccount = await accountsService.updatePassword(req.body)
         res.send(updatedAccount)
+    } catch (error) {
+        next(error)
+    }
+})
+
+accountsRoute.put("/block/:email", validator(accountSchemas.emailSchema, "params"), async (req, res, next) => {
+    appLogger.info("Block Account requested")
+    try {
+        const response = await accountsService.blockAccount(req.params.email)
+        res.send(response)
+    } catch (error) {
+        next(error)
+    }
+})
+
+accountsRoute.put("/unblock/:email", validator(accountSchemas.emailSchema, "params"), async (req, res, next) => {
+    appLogger.info("Unblock Account requested")
+    try {
+        const response = await accountsService.unblockAccount(req.params.email)
+        res.send(response)
     } catch (error) {
         next(error)
     }
