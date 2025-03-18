@@ -6,11 +6,21 @@ import { validator } from "../middleware/validation.js";
 
 const accountsRoute = express.Router();
 
-accountsRoute.post("/add-user", validator(accountSchemas.addUserSchema), async (req, res, next) => {
+accountsRoute.post("/user", validator(accountSchemas.addAccountSchema), async (req, res, next) => {
     appLogger.info("Add user requested")
     try {
         const addedUser = await accountsService.addUser(req.body)
         res.send(addedUser)
+    } catch (error) {
+        next(error)
+    }
+})
+
+accountsRoute.post("/admin", validator(accountSchemas.addAccountSchema), async (req, res, next) => {
+    appLogger.info("Add admin requested")
+    try {
+        const addedAdmin = await accountsService.addAdmin(req.body)
+        res.send(addedAdmin)
     } catch (error) {
         next(error)
     }

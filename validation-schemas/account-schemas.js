@@ -18,7 +18,7 @@ const passwordValidation = Joi.string()
     .message("Password must have at least 8 characters, one uppercase, one lowercase, one digit, and one special character")
     .required()
 
-export const addUserSchema = Joi.object({
+export const addAccountSchema = Joi.object({
     email: emailValidation,
     name: nameValidation,
     password: passwordValidation
@@ -26,5 +26,5 @@ export const addUserSchema = Joi.object({
 
 
 export default {
-    addUserSchema
+    addAccountSchema
 }

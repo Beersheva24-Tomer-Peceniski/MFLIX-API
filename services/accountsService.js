@@ -1,19 +1,27 @@
-import { userRole } from "../constants/constants.js";
+import { accountRole } from "../constants/constants.js";
 import { createError } from "../errors/errors.js";
 import accountsRepository from "../repositories/accountsRepository.js";
 import bcrypt from "bcrypt";
 
 class AccountService {
 
-    async addUser(user) {
-        const oldUser = await accountsRepository.findByEmail(user.email)
+    addUser(user) {
+        return this.addAccount(user, accountRole.USER)
+    }
+
+    addAdmin(admin) {
+        return this.addAccount(admin, accountRole.ADMIN)
+    }
+
+    async addAccount(account, role) {
+        const oldUser = await accountsRepository.findByEmail(account.email)
         if(oldUser) {
             throw createError(409, "An account with this e-mail already exists")
         }
-        user.role = userRole.USER;
-        user.blocked = false;
-        user.password = await bcrypt.hash(user.password, 10);
-        return accountsRepository.addUser(user);
+        account.role = role;
+        account.blocked = false;
+        account.password = await bcrypt.hash(account.password, 10);
+        return accountsRepository.addUser(account);
     }
 
 }
