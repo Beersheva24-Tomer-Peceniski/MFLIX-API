@@ -56,6 +56,10 @@ class AccountService {
         return updatedAccount;
     }
 
+    async fyndByEmail(email) {
+        return await accountsRepository.findByEmail(email);
+    }
+
 }
 
 const accountsService = new AccountService();

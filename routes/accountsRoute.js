@@ -6,6 +6,12 @@ import { validator } from "../middleware/validation.js";
 
 const accountsRoute = express.Router();
 
+accountsRoute.get("/:email", validator(accountSchemas.getByEmailSchema, "params"), async (req, res) => {
+    appLogger.info("Get account by email requested");
+    const user = await accountsService.fyndByEmail(req.params.email);
+    res.send(user);
+})
+
 accountsRoute.post("/user", validator(accountSchemas.addAccountSchema), async (req, res, next) => {
     appLogger.info("Add user requested")
     try {
