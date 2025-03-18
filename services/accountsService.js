@@ -39,6 +39,23 @@ class AccountService {
         return updatedAccount;
     }
 
+    async updatePassword(account) {
+        const oldAccount = await accountsRepository.findByEmail(account.email)
+        if (!oldAccount) {
+            throw createError(400, "There is no account with the inserted email")
+        }
+        const isMatch = await bcrypt.compare(account.password, oldAccount.password)
+        if (isMatch) {
+            throw createError(400, "Inserted password is the same as previous one")
+        }
+        account.password = await bcrypt.hash(account.password, 10);
+        const updatedAccount = await accountsRepository.updatePassword(account);
+        if (!updatedAccount) {
+            throw createError(500, "It was not possible to update password")
+        }
+        return updatedAccount;
+    }
+
 }
 
 const accountsService = new AccountService();

@@ -36,4 +36,14 @@ accountsRoute.put("/role", validator(accountSchemas.updateRoleSchema), async (re
     }
 })
 
+accountsRoute.put("/password", validator(accountSchemas.updatePasswordSchema), async (req, res, next) => {
+    appLogger.info("Update password requested")
+    try {
+        const updatedAccount = await accountsService.updatePassword(req.body)
+        res.send(updatedAccount)
+    } catch (error) {
+        next(error)
+    }
+})
+
 export default accountsRoute;

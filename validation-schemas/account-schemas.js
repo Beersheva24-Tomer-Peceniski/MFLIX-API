@@ -37,8 +37,14 @@ export const updateRoleSchema = Joi.object({
     role: roleValidation
 })
 
+export const updatePasswordSchema = Joi.object({
+    email: emailValidation,
+    password: passwordValidation
+})
+
 
 export default {
     addAccountSchema,
-    updateRoleSchema
+    updateRoleSchema,
+    updatePasswordSchema
 }

@@ -16,7 +16,15 @@ class AccountsRepository {
     async updateRole(account) {
         const accountsCollection = db.collection("accounts");
         const { modifiedCount } = await accountsCollection.updateOne({ email: account.email },
-            [{ $set: { role: account.role } }]
+            { $set: { role: account.role } }
+        );
+        return modifiedCount == 0 ? null : accountsCollection.findOne({ email: account.email })
+    }
+
+    async updatePassword(account) {
+        const accountsCollection = db.collection("accounts");
+        const { modifiedCount } = await accountsCollection.updateOne({ email: account.email },
+            { $set: { password: account.password } }
         );
         return modifiedCount == 0 ? null : accountsCollection.findOne({ email: account.email })
     }
