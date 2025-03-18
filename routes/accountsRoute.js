@@ -26,4 +26,14 @@ accountsRoute.post("/admin", validator(accountSchemas.addAccountSchema), async (
     }
 })
 
+accountsRoute.put("/role", validator(accountSchemas.updateRoleSchema), async (req, res, next) => {
+    appLogger.info("Update role requested")
+    try {
+        const updatedAccount = await accountsService.updateRole(req.body)
+        res.send(updatedAccount)
+    } catch (error) {
+        next(error)
+    }
+})
+
 export default accountsRoute;

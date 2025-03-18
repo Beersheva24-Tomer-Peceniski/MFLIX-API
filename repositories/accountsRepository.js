@@ -10,7 +10,15 @@ class AccountsRepository {
 
     findByEmail(email) {
         const accountsCollection = db.collection("accounts");
-        return accountsCollection.findOne({email});
+        return accountsCollection.findOne({ email });
+    }
+
+    async updateRole(account) {
+        const accountsCollection = db.collection("accounts");
+        const { modifiedCount } = await accountsCollection.updateOne({ email: account.email },
+            [{ $set: { role: account.role } }]
+        );
+        return modifiedCount == 0 ? null : accountsCollection.findOne({ email: account.email })
     }
 }
 
