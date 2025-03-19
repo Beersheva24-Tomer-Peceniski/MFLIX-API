@@ -36,4 +36,14 @@ favoritesRoute.put("/", validator(favoriteSchemas.updateSchema), async(req, res,
     }
 })
 
+favoritesRoute.delete("/", validator(favoriteSchemas.deleteSchema), async(req, res, next) => {
+    appLogger.info("Delete favorite requested");
+    try{
+        const deletedFavorite = await favoritesService.delete(req.body);
+        res.send(deletedFavorite)
+    } catch(error) {
+        next(error);
+    }
+})
+
 export default favoritesRoute;

@@ -26,6 +26,13 @@ class FavoritesRepository {
         return modifiedCount == 0 ? null : this.findById(favorite.id);
     }
 
+    async delete(id) {
+        const favoritesCollection = db.collection("favorites");
+        const favorite = await this.findById(id);
+        const { deletedCount } = await favoritesCollection.deleteOne({ _id: id });
+        return deletedCount == 0 ? null : favorite
+    }
+
     findById(id) {
         const favoritesCollection = db.collection("favorites");
         return favoritesCollection.findOne({ _id: id });

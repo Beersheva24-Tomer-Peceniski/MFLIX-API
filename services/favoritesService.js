@@ -46,6 +46,19 @@ class FavoritesService {
         return updatedFavorite;
     }
 
+    async delete(favorite) {
+        favorite.id = new ObjectId(favorite.id);
+        const oldFavorite = await favoritesRepository.findById(favorite.id);
+        if(!oldFavorite) {
+            throw createError(404, "There is no favorite with this ID");
+        }
+        const deletedFavorite = await favoritesRepository.delete(favorite.id);
+        if(!deletedFavorite) {
+            throw createError(500, "It was not possible to delete the favorite");
+        }
+        return deletedFavorite;
+    }
+
 }
 
 const favoritesService = new FavoritesService();

@@ -26,8 +26,14 @@ export const updateSchema = Joi.object({
     viewed: viewdValidation
 })
 
+export const deleteSchema = Joi.object({
+    id: idValidation.required(),
+    email: emailValidation.required()
+})
+
 export default {
     addSchema,
     getByEmailSchema,
-    updateSchema
+    updateSchema,
+    deleteSchema
 }
