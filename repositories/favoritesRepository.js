@@ -17,6 +17,19 @@ class FavoritesRepository {
         const favoritesCollection = db.collection("favorites");
         return favoritesCollection.find({email}).toArray();
     }
+
+    async update(favorite) {
+        const favoritesCollection = db.collection("favorites");
+        const { modifiedCount } = await favoritesCollection.updateOne({ _id: favorite.id, email: favorite.email },
+            { $set: { viewed: favorite.viewed, feedback: favorite.feedback } }
+        );
+        return modifiedCount == 0 ? null : this.findById(favorite.id);
+    }
+
+    findById(id) {
+        const favoritesCollection = db.collection("favorites");
+        return favoritesCollection.findOne({ _id: id });
+    }
 }
 
 const favoritesRepository = new FavoritesRepository();

@@ -26,4 +26,14 @@ favoritesRoute.post("/", validator(favoriteSchemas.addSchema), async (req, res, 
     }
 })
 
+favoritesRoute.put("/", validator(favoriteSchemas.updateSchema), async(req, res, next) => {
+    appLogger.info("Update favorite requested");
+    try{
+        const updatedFavorite = await favoritesService.update(req.body);
+        res.send(updatedFavorite)
+    } catch(error) {
+        next(error);
+    }
+})
+
 export default favoritesRoute;

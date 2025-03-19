@@ -19,7 +19,15 @@ export const getByEmailSchema = Joi.object({
     email: emailValidation.required()
 })
 
+export const updateSchema = Joi.object({
+    id: idValidation.required(),
+    email: emailValidation.required(),
+    feedback: feedbackValidation,
+    viewed: viewdValidation
+})
+
 export default {
     addSchema,
-    getByEmailSchema
+    getByEmailSchema,
+    updateSchema
 }

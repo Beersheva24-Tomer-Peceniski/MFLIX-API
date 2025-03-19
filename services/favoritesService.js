@@ -31,6 +31,21 @@ class FavoritesService {
         return favoritesRepository.findByEmail(email);
     }
 
+    async update(favorite) {
+        favorite.id = new ObjectId(favorite.id);
+        const oldFavorite = await favoritesRepository.findById(favorite.id);
+        if(!oldFavorite) {
+            throw createError(404, "There is no favorite with this ID");
+        }
+        favorite.viewed = favorite.viewed ?? oldFavorite.viewed;
+        favorite.feedback = favorite.feedback ?? oldFavorite.feedback;
+        const updatedFavorite = await favoritesRepository.update(favorite);
+        if(!updatedFavorite) {
+            throw createError(500, "It was not possible to update the favorite");
+        }
+        return updatedFavorite;
+    }
+
 }
 
 const favoritesService = new FavoritesService();
