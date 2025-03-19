@@ -8,13 +8,18 @@ const feedbackValidation = Joi.string();
 
 const viewdValidation = Joi.boolean();
 
-export const addFavoriteSchema = Joi.object({
+export const addSchema = Joi.object({
     email: emailValidation.required(),
     movieId: idValidation.required(),
     feedback: feedbackValidation,
     viewed: viewdValidation
 })
 
+export const getByEmailSchema = Joi.object({
+    email: emailValidation.required()
+})
+
 export default {
-    addFavoriteSchema
+    addSchema,
+    getByEmailSchema
 }
