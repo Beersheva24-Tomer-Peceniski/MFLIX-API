@@ -8,10 +8,12 @@ const BASIC = "Basic ";
 export function authenticate() {
     return async (req, res, next) => {
         const authHeader = req.header("Authorization");
-        if (authHeader.startsWith(BEARER)) {
-            jwtAuthentication(req, authHeader);
-        } else if (authHeader.startsWith(BASIC)) {
-            await basicAuthentication(req, authHeader);
+        if (authHeader) {
+            if (authHeader.startsWith(BEARER)) {
+                jwtAuthentication(req, authHeader);
+            } else if (authHeader.startsWith(BASIC)) {
+                await basicAuthentication(req, authHeader);
+            }
         }
         next();
     }
