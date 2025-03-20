@@ -23,10 +23,20 @@ accountsRoute.post("/user", validator(accountSchemas.addAccountSchema), async (r
 })
 
 accountsRoute.post("/admin", validator(accountSchemas.addAccountSchema), async (req, res, next) => {
-    appLogger.info("Add admin requested")
+    appLogger.info("Add admin requested");
     try {
         const addedAdmin = await accountsService.addAdmin(req.body)
         res.send(addedAdmin)
+    } catch (error) {
+        next(error)
+    }
+})
+
+accountsRoute.post("/login", validator(accountSchemas.loginSchema), async (req, res, next) => {
+    appLogger.info("Login requested");
+    try {
+        const token = await accountsService.login(req.body)
+        res.send(token)
     } catch (error) {
         next(error)
     }

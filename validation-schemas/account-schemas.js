@@ -46,10 +46,16 @@ export const emailSchema = Joi.object({
     email: emailValidation
 })
 
+export const loginSchema = Joi.object({
+    email: emailValidation,
+    password: passwordValidation
+})
+
 
 export default {
     addAccountSchema,
     updateRoleSchema,
     updatePasswordSchema,
-    emailSchema
+    emailSchema,
+    loginSchema
 }

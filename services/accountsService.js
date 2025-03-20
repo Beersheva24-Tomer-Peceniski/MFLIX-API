@@ -2,6 +2,7 @@ import { accountRole } from "../constants/constants.js";
 import { createError } from "../errors/errors.js";
 import accountsRepository from "../repositories/accountsRepository.js";
 import bcrypt from "bcrypt";
+import JwtUtil from "../security/JwtUtil.js";
 
 class AccountService {
 
@@ -107,7 +108,12 @@ class AccountService {
         if (!account || !(await bcrypt.compare(password, account.password))) {
             throw createError(400, "Wrong credentials")
         }
-        return true;
+    }
+
+    async login(account) {
+        await this.checkLogin(account.email, account.password)
+        account = await accountsRepository.findByEmail(account.email);
+        return JwtUtil.getJwt(account);
     }
 }
 

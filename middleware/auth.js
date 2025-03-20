@@ -1,6 +1,6 @@
-import { createError } from "../errors/errors";
-import JwtUtil from "../security/JwtUtil";
-import accountsService from "../services/accountsService";
+import { createError } from "../errors/errors.js";
+import JwtUtil from "../security/JwtUtil.js";
+import accountsService from "../services/accountsService.js";
 
 const BEARER = "Bearer ";
 const BASIC = "Basic ";
