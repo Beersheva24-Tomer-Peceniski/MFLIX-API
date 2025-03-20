@@ -118,6 +118,10 @@ class AccountService {
         }
         return JwtUtil.getJwt(account);
     }
+
+    isBlocked(email) {
+        return accountsRepository.isBlocked(email);
+    }
 }
 
 const accountsService = new AccountService();

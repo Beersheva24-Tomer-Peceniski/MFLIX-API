@@ -53,19 +53,26 @@ async function basicAuthentication(req, authHeader) {
 }
 
 export function auth(rules) {
-    return (req, res, next) => {
-        const { authentication, authorization } = rules[req.method];
-        if (!authorization) {
-            throw createError(500, "Security configuration not provided");
-        }
-        if (authentication(req)) {
-            if (req.authType != authentication(req)) {
-                throw createError(401, "No required configuration");
+    return async (req, res, next) => {
+        try {
+            const { authentication, authorization } = rules[req.method];
+            if (!authorization) {
+                throw createError(500, "Security configuration not provided");
             }
-            if (!authorization(req)) {
-                throw createError(403, "");
+            if (authentication(req)) {
+                if (await accountsService.isBlocked(req.user)) {
+                    throw createError(401, "Inserted user is blocked")
+                }
+                if (req.authType != authentication(req)) {
+                    throw createError(401, "No required configuration");
+                }
+                if (!authorization(req)) {
+                    throw createError(403, "");
+                }
             }
+            next();
+        } catch (error) {
+            next(error)
         }
-        next();
     }
 }

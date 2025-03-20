@@ -50,6 +50,12 @@ class AccountsRepository {
         const { deletedCount } = await accountsCollection.deleteOne({ email });
         return deletedCount != 0;
     }
+
+    async isBlocked(email) {
+        const accountsCollection = db.collection("accounts");
+        const account = await accountsCollection.findOne({email});
+        return !!account.blocked;
+    }
 }
 
 const accountsRepository = new AccountsRepository();
