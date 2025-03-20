@@ -14,7 +14,6 @@ const commentsRoute = express.Router();
 const authMiddleware = auth(authRules.COMMENTS);
 authMiddleware.unless = unless;
 
-
 commentsRoute.use(authMiddleware.unless({ path: [{ method: "DELETE", url: /^\/comments\/\w+$/ }] }));
 
 commentsRoute.get("/", async (req, res, next) => {

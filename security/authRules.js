@@ -31,7 +31,7 @@ const authRules = {
         },
         PUT: {
             authentication: req => "jwt",
-            authorization: async req => req.role == "PREMIUM_USER" && req.user == req.body.email
+            authorization: req => req.role == "PREMIUM_USER" && req.user == req.body.email
         },
         DELETE: {
             authentication: req => "jwt",
@@ -42,6 +42,24 @@ const authRules = {
                 }
                 return (req.role == "PREMIUM_USER" && req.user == comment.email) || req.role == "ADMIN";
             }
+        }
+    },
+    FAVORITES: {
+        GET: {
+            authentication: req => "jwt",
+            authorization: req => req.role == "PREMIUM_USER" && req.user == req.params.email
+        },
+        POST: {
+            authentication: req => "jwt",
+            authorization: req => req.role == "PREMIUM_USER"
+        },
+        PUT: {
+            authentication: req => "jwt",
+            authorization: async req => req.role == "PREMIUM_USER" && req.user == req.body.email
+        },
+        DELETE: {
+            authentication: req => "jwt",
+            authorization: async req => req.role == "PREMIUM_USER" && req.user == req.body.email
         }
     }
 }
