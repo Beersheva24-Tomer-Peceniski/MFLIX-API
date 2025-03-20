@@ -66,7 +66,7 @@ export function auth(rules) {
                 if (req.authType != authentication(req)) {
                     throw createError(401, "No required configuration");
                 }
-                if (!authorization(req)) {
+                if (! await authorization(req)) {
                     throw createError(403, "");
                 }
             }

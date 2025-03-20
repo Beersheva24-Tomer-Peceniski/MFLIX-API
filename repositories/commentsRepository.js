@@ -36,6 +36,11 @@ class CommentRepository {
         );
         return modifiedCount == 0 ? null : await commentsCollection.findOne({ _id: comment.id })
     }
+
+    getById(id) {
+        const commentsCollection = CommentRepository.db.collection("comments");
+        return commentsCollection.findOne({ _id: id });
+    }
 }
 
 const commentsRepository = new CommentRepository();

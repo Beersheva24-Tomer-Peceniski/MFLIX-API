@@ -43,6 +43,11 @@ class CommentService {
         }
         return deletedComment;
     }
+
+    getById(id) {
+        const commentId = new ObjectId(id);
+        return commentsRepository.getById(commentId);
+    }
 }
 
 const commentsService = new CommentService();

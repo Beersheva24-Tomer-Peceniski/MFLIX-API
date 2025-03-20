@@ -5,8 +5,17 @@ import { movieIdSchema } from "../validation-schemas/movie-schemas.js";
 import { createError } from "../errors/errors.js";
 import commentSchemas from "../validation-schemas/comment-schemas.js";
 import { validator } from "../middleware/validation.js";
+import authRules from "../security/authRules.js";
+import { auth } from "../middleware/auth.js";
+import { unless } from "express-unless";
 
 const commentsRoute = express.Router();
+
+const authMiddleware = auth(authRules.COMMENTS);
+authMiddleware.unless = unless;
+
+
+commentsRoute.use(authMiddleware.unless({ path: [{ method: "DELETE", url: /^\/comments\/\w+$/ }] }));
 
 commentsRoute.get("/", async (req, res, next) => {
     try {
@@ -60,7 +69,7 @@ commentsRoute.put("/", validator(commentSchemas.updateCommentSchema), async (req
     }
 })
 
-commentsRoute.delete("/:commentId", validator(commentSchemas.commentIdSchema, "params"), async (req, res, next) => {
+commentsRoute.delete("/:commentId", authMiddleware, validator(commentSchemas.commentIdSchema, "params"), async (req, res, next) => {
     appLogger.info("Delete comment requested");
     try {
         const deletedComment = await commentsService.deleteCommentById(req.params.commentId);
