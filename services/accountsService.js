@@ -113,6 +113,9 @@ class AccountService {
     async login(account) {
         await this.checkLogin(account.email, account.password)
         account = await accountsRepository.findByEmail(account.email);
+        if(account.blocked) {
+            throw createError(400, "Inserted account is blocked")
+        }
         return JwtUtil.getJwt(account);
     }
 }
