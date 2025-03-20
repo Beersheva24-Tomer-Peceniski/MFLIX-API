@@ -102,6 +102,13 @@ class AccountService {
         return "Account successfully deleted"
     }
 
+    async checkLogin(email, password) {
+        const account = await accountsRepository.findByEmail(email);
+        if (!account || !(await bcrypt.compare(password, account.password))) {
+            throw createError(400, "Wrong credentials")
+        }
+        return true;
+    }
 }
 
 const accountsService = new AccountService();

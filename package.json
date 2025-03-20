@@ -17,6 +17,7 @@
     "express-winston": "^4.2.0",
     "fs-extra": "^11.3.0",
     "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
     "luxon": "^3.5.0",
     "mkdir": "^0.0.2",
     "mlflix-api": "file:",
