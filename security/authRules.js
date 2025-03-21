@@ -73,7 +73,7 @@ const authRules = {
         },
         PUTPASSWORD: {
             authentication: req => "jwt",
-            authorization: req => req.role == "ADMIN" || req.user == req.params.email
+            authorization: req => req.role == "ADMIN" || req.user == req.body.email
         },
         PUTROLE: {
             authentication: req => "jwt",
