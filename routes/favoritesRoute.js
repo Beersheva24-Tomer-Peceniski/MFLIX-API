@@ -3,10 +3,18 @@ import appLogger from "../logger/appLogger.js";
 import favoriteSchemas from "../validation-schemas/favorite-schemas.js";
 import favoritesService from "../services/favoritesService.js";
 import { validator } from "../middleware/validation.js";
+import { auth } from "../middleware/auth.js";
+import authRules from "../security/authRules.js";
+import { unless } from "express-unless";
 
 const favoritesRoute = express.Router();
 
-favoritesRoute.get("/:email", validator(favoriteSchemas.getByEmailSchema, "params"), async (req, res, next) => {
+const authMiddleware = auth(authRules.FAVORITES);
+authMiddleware.unless = unless;
+
+favoritesRoute.use(authMiddleware.unless({ path: [{ method: "GET", url: /^\/favorites\/[^\/]+$/ }] }));
+
+favoritesRoute.get("/:email", authMiddleware, validator(favoriteSchemas.getByEmailSchema, "params"), async (req, res, next) => {
     appLogger.info("Get favorites by Email requested");
     try {
         const favorites = await favoritesService.getByEmail(req.params.email);

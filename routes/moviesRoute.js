@@ -3,8 +3,11 @@ import moviesService from "../services/moviesService.js";
 import appLogger from "../logger/appLogger.js";
 import movieSchemas from "../validation-schemas/movie-schemas.js";
 import { validator } from "../middleware/validation.js";
+import authRules from "../security/authRules.js";
+import { auth } from "../middleware/auth.js";
 
 const moviesRoute = express.Router();
+moviesRoute.use(auth(authRules.MOVIES));
 
 moviesRoute.get("/most-rated", validator(movieSchemas.filterMoviesSchema), async (req, res) => {
     appLogger.info("Get most rated movies requested");

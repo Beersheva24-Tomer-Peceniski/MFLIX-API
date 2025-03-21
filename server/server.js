@@ -7,14 +7,17 @@ import { errorHandler } from "../errors/errors.js";
 import accountsRoute from "../routes/accountsRoute.js";
 import commentsRoute from "../routes/commentsRoute.js";
 import favoritesRoute from "../routes/favoritesRoute.js";
+import { authenticate } from "../middleware/auth.js";
 
 configDotenv()
 const port = process.env.PORT || 4000;
 
 const app = express();
 
-app.use(requestLogger);
 app.use(express.json());
+app.use(requestLogger);
+app.use(authenticate());
+
 app.use("/movies", moviesRoute);
 app.use("/comments", commentsRoute);
 app.use("/accounts", accountsRoute)
