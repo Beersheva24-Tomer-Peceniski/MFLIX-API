@@ -55,11 +55,37 @@ const authRules = {
         },
         PUT: {
             authentication: req => "jwt",
-            authorization: async req => req.role == "PREMIUM_USER" && req.user == req.body.email
+            authorization: req => req.role == "PREMIUM_USER" && req.user == req.body.email
         },
         DELETE: {
             authentication: req => "jwt",
-            authorization: async req => req.role == "PREMIUM_USER" && req.user == req.body.email
+            authorization: req => req.role == "PREMIUM_USER" && req.user == req.body.email
+        }
+    },
+    ACCOUNT: {
+        GET: {
+            authentication: req => "jwt",
+            authorization: req => req.role == "ADMIN" || req.user == req.params.email
+        },
+        POST: {
+            authentication: req => "basic",
+            authorization: req => !!req.user && req.role == ""
+        },
+        PUTPASSWORD: {
+            authentication: req => "jwt",
+            authorization: req => req.role == "ADMIN" || req.user == req.params.email
+        },
+        PUTROLE: {
+            authentication: req => "jwt",
+            authorization: req => req.role == "ADMIN"
+        },
+        PUTBLOCKUNBLOCK: {
+            authentication: req => "jwt",
+            authorization: req => req.role == "ADMIN"
+        },
+        DELETE: {
+            authentication: req => "jwt",
+            authorization: req => req.role == "ADMIN" || req.user == req.params.email
         }
     }
 }

@@ -34,7 +34,7 @@ function jwtAuthentication(req, authHeader) {
 async function basicAuthentication(req, authHeader) {
     const userNamePassword64 = authHeader.substring(BASIC.length);
     const userNamePassword = Buffer.from(userNamePassword64, "base64").toString("utf-8");
-    const { username, password } = userNamePassword.split(":");
+    const [username, password] = userNamePassword.split(":");
     try {
         if (username == process.env.ADMIN_USERNAME && password == process.env.ADMIN_PASSWORD) {
             req.user = username;
@@ -55,13 +55,18 @@ async function basicAuthentication(req, authHeader) {
 export function auth(rules) {
     return async (req, res, next) => {
         try {
-            const { authentication, authorization } = rules[req.method];
+            const { authentication, authorization } = rules[req.method] ?? rules;
             if (!authorization) {
                 throw createError(500, "Security configuration not provided");
             }
             if (authentication(req)) {
-                if (await accountsService.isBlocked(req.user)) {
-                    throw createError(401, "Inserted user is blocked")
+                if (!req.user) {
+                    throw createError(400, "Wrong credentials");
+                }
+                if (req.role != "") {
+                    if (await accountsService.isBlocked(req.user)) {
+                        throw createError(401, "Inserted user is blocked")
+                    }
                 }
                 if (req.authType != authentication(req)) {
                     throw createError(401, "No required configuration");

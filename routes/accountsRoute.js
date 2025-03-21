@@ -3,10 +3,13 @@ import appLogger from "../logger/appLogger.js";
 import accountSchemas from "../validation-schemas/account-schemas.js";
 import accountsService from "../services/accountsService.js";
 import { validator } from "../middleware/validation.js";
+import { auth } from "../middleware/auth.js";
+import authRules from "../security/authRules.js";
+
 
 const accountsRoute = express.Router();
 
-accountsRoute.get("/:email", validator(accountSchemas.emailSchema, "params"), async (req, res) => {
+accountsRoute.get("/:email", auth(authRules.ACCOUNT.GET), validator(accountSchemas.emailSchema, "params"), async (req, res) => {
     appLogger.info("Get account by email requested");
     const user = await accountsService.fyndByEmail(req.params.email);
     res.send(user);
@@ -22,7 +25,7 @@ accountsRoute.post("/user", validator(accountSchemas.addAccountSchema), async (r
     }
 })
 
-accountsRoute.post("/admin", validator(accountSchemas.addAccountSchema), async (req, res, next) => {
+accountsRoute.post("/admin", auth(authRules.ACCOUNT.POST), validator(accountSchemas.addAccountSchema), async (req, res, next) => {
     appLogger.info("Add admin requested");
     try {
         const addedAdmin = await accountsService.addAdmin(req.body)
@@ -42,7 +45,7 @@ accountsRoute.post("/login", validator(accountSchemas.loginSchema), async (req, 
     }
 })
 
-accountsRoute.put("/role", validator(accountSchemas.updateRoleSchema), async (req, res, next) => {
+accountsRoute.put("/role", auth(authRules.ACCOUNT.PUTROLE), validator(accountSchemas.updateRoleSchema), async (req, res, next) => {
     appLogger.info("Update role requested")
     try {
         const updatedAccount = await accountsService.updateRole(req.body)
@@ -52,7 +55,7 @@ accountsRoute.put("/role", validator(accountSchemas.updateRoleSchema), async (re
     }
 })
 
-accountsRoute.put("/password", validator(accountSchemas.updatePasswordSchema), async (req, res, next) => {
+accountsRoute.put("/password", auth(authRules.ACCOUNT.PUTPASSWORD), validator(accountSchemas.updatePasswordSchema), async (req, res, next) => {
     appLogger.info("Update password requested")
     try {
         const updatedAccount = await accountsService.updatePassword(req.body)
@@ -62,7 +65,7 @@ accountsRoute.put("/password", validator(accountSchemas.updatePasswordSchema), a
     }
 })
 
-accountsRoute.put("/block/:email", validator(accountSchemas.emailSchema, "params"), async (req, res, next) => {
+accountsRoute.put("/block/:email", auth(authRules.ACCOUNT.PUTBLOCKUNBLOCK), validator(accountSchemas.emailSchema, "params"), async (req, res, next) => {
     appLogger.info("Block Account requested")
     try {
         const response = await accountsService.blockAccount(req.params.email)
@@ -72,7 +75,7 @@ accountsRoute.put("/block/:email", validator(accountSchemas.emailSchema, "params
     }
 })
 
-accountsRoute.put("/unblock/:email", validator(accountSchemas.emailSchema, "params"), async (req, res, next) => {
+accountsRoute.put("/unblock/:email", auth(authRules.ACCOUNT.PUTBLOCKUNBLOCK), validator(accountSchemas.emailSchema, "params"), async (req, res, next) => {
     appLogger.info("Unblock Account requested")
     try {
         const response = await accountsService.unblockAccount(req.params.email)
@@ -82,7 +85,7 @@ accountsRoute.put("/unblock/:email", validator(accountSchemas.emailSchema, "para
     }
 })
 
-accountsRoute.delete("/:email", validator(accountSchemas.emailSchema, "params"), async (req, res, next) => {
+accountsRoute.delete("/:email", auth(authRules.ACCOUNT.DELETE), validator(accountSchemas.emailSchema, "params"), async (req, res, next) => {
     appLogger.info("Delete Account requested")
     try {
         const response = await accountsService.deleteAccount(req.params.email)
