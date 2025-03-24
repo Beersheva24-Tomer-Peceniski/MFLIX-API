@@ -1,7 +1,7 @@
 import Joi from "joi";
 import { accountRole } from "../constants/constants.js";
 
-const emailValidation = Joi.string().email().required();
+const emailValidation = Joi.string().email();
 
 const nameValidation = Joi.string()
     .min(3)
@@ -16,8 +16,7 @@ const nameValidation = Joi.string()
 const passwordValidation = Joi.string()
     .min(8)
     .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/)
-    .message("Password must have at least 8 characters, one uppercase, one lowercase, one digit, and one special character")
-    .required()
+    .message("Password must have at least 8 characters, one uppercase, one lowercase, one digit, and one special character");
 
 const roleValidation = Joi.string()
     .valid(...Object.values(accountRole))
@@ -27,28 +26,28 @@ const roleValidation = Joi.string()
     });
 
 export const addAccountSchema = Joi.object({
-    email: emailValidation,
+    email: emailValidation.required(),
     name: nameValidation,
-    password: passwordValidation
+    password: passwordValidation.required()
 })
 
 export const updateRoleSchema = Joi.object({
-    email: emailValidation,
+    email: emailValidation.required(),
     role: roleValidation
 })
 
 export const updatePasswordSchema = Joi.object({
-    email: emailValidation,
-    password: passwordValidation
+    email: emailValidation.required(),
+    password: passwordValidation.required()
 })
 
 export const emailSchema = Joi.object({
-    email: emailValidation
+    email: emailValidation.required()
 })
 
 export const loginSchema = Joi.object({
-    email: emailValidation,
-    password: passwordValidation
+    email: emailValidation.required(),
+    password: passwordValidation.required()
 })
 
 

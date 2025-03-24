@@ -1,24 +1,30 @@
 import Joi from "joi";
 
+const emailValidation = Joi.string().email();
+
+const idValidation = Joi.string().length(24).hex();
+
+const stringValidation = Joi.string();
+
 export const emailSchema = Joi.object({
-    email: Joi.string().email().required()
+    email: emailValidation.required()
 })
 
 export const addCommentSchema = Joi.object({
-    email: Joi.string().email().required(),
-    movieId: Joi.string().length(24).hex().required(),
-    text: Joi.string().required(),
-    name: Joi.string().required()
+    email: emailValidation.required(),
+    movieId: idValidation.required(),
+    text: stringValidation.required(),
+    name: stringValidation.required(),
 })
 
 export const updateCommentSchema = Joi.object({
-    commentId: Joi.string().length(24).hex().required(),
-    email: Joi.string().email().required(),
-    text: Joi.string().required()
+    commentId: idValidation.required(),
+    email: emailValidation.required(),
+    text: stringValidation.required()
 })
 
 export const commentIdSchema = Joi.object({
-    commentId: Joi.string().length(24).hex().required()
+    commentId: idValidation.required()
 })
 
 export default {

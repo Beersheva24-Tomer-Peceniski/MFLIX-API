@@ -3,9 +3,8 @@ import Joi from "joi";
 const currentYear = new Date().getFullYear();
 
 export const movieIdSchema = Joi.object({
-    id: Joi.string().length(24).hex(),
-    movieId: Joi.string().length(24).hex()
-}).oxor("id", "movieId").required();
+    id: Joi.string().length(24).hex().required()
+})
 
 export const filterMoviesSchema = Joi.object({
     year: Joi.number().integer().min(0).max(currentYear).optional(),
