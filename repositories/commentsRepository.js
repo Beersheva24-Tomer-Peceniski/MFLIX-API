@@ -1,44 +1,41 @@
 import db from "../database/database.js";
-class CommentRepository {
-    static db = db;
 
+class CommentRepository {
     async getCommentsByMovieId(movieId) {
-        const commentsCollection = CommentRepository.db.collection("comments");
-        const comments = await commentsCollection.find({ movie_id: movieId })
+        const commentsCollection = db.collection("comments");
+        return commentsCollection.find({ movie_id: movieId })
             .project({ email: 1, text: 1, _id: 0 })
             .toArray();
-        return comments;
     }
 
     async getCommentsByEmail(email) {
-        const commentsCollection = CommentRepository.db.collection("comments");
-        const comments = await commentsCollection.find({ email: email }).toArray();
-        return comments;
+        const commentsCollection = db.collection("comments");
+        return commentsCollection.find({ email: email }).toArray();
     }
 
     async deleteCommentById(commentId) {
-        const commentsCollection = CommentRepository.db.collection("comments");
+        const commentsCollection = db.collection("comments");
         const comment = await commentsCollection.findOne({ _id: commentId });
         const { deletedCount } = await commentsCollection.deleteOne({ _id: commentId });
         return deletedCount == 0 ? null : comment;
     }
 
     async addComment(comment) {
-        const commentsCollection = CommentRepository.db.collection("comments");
+        const commentsCollection = db.collection("comments");
         const { insertedId } = await commentsCollection.insertOne(comment)
-        return await commentsCollection.findOne({ _id: insertedId });
+        return commentsCollection.findOne({ _id: insertedId });
     }
 
     async updateComment(comment) {
-        const commentsCollection = CommentRepository.db.collection("comments");
+        const commentsCollection = db.collection("comments");
         const { modifiedCount } = await commentsCollection.updateOne({ _id: comment.id, email: comment.email },
             [{ $set: { "text": comment.text } }]
         );
         return modifiedCount == 0 ? null : await commentsCollection.findOne({ _id: comment.id })
     }
 
-    getById(id) {
-        const commentsCollection = CommentRepository.db.collection("comments");
+    async getById(id) {
+        const commentsCollection = db.collection("comments");
         return commentsCollection.findOne({ _id: id });
     }
 }

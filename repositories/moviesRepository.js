@@ -2,10 +2,9 @@ import db from "../database/database.js";
 import { createError } from "../errors/errors.js";
 
 class MovieRepository {
-    static db = db;
 
     async getMovieById(movieId) {
-        const moviesCollection = MovieRepository.db.collection("movies");
+        const moviesCollection = db.collection("movies");
         const movie = await moviesCollection.findOne({ _id: movieId });
         if (!movie) {
             throw createError(400, "There is no movie with this ID");
@@ -14,7 +13,7 @@ class MovieRepository {
     }
 
     addCommentsNumber(movieId) {
-        const moviesCollection = MovieRepository.db.collection("movies");
+        const moviesCollection = db.collection("movies");
         moviesCollection.updateOne({ _id: movieId },
             [{
                 $set:
@@ -24,7 +23,7 @@ class MovieRepository {
     }
 
     async getMostRatedMovies(filter) {
-        const moviesCollection = MovieRepository.db.collection("movies");
+        const moviesCollection = db.collection("movies");
         const amount = filter.amount || 10;
         delete filter.amount;
 
@@ -44,7 +43,7 @@ class MovieRepository {
     }
 
     async getMostCommentedMovies(filter) {
-        const moviesCollection = MovieRepository.db.collection("movies");
+        const moviesCollection = db.collection("movies");
         const amount = filter.amount || 10;
         delete filter.amount;
 
@@ -63,7 +62,7 @@ class MovieRepository {
 
     async addRate(rateInfo) {
         const { id, rating } = rateInfo;
-        const moviesCollection = MovieRepository.db.collection("movies");
+        const moviesCollection = db.collection("movies");
 
         const { modifiedCount } = await moviesCollection.updateMany(
             { "imdb.id": id },
