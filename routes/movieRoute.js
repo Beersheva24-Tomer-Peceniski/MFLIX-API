@@ -10,21 +10,21 @@ const movieRoute = express.Router();
 
 movieRoute.get("/most-rated", auth(authRules.movies.get), validator(movieSchemas.filterMoviesSchema), async (req, res) => {
     appLogger.info("Get most rated movies requested");
-    const movies = await movieService.getMostRatedMovies(req.body);
+    const movies = await movieService.getMostRated(req.body);
     res.send(movies);
 })
 
 movieRoute.get("/most-commented", auth(authRules.movies.get), validator(movieSchemas.filterMoviesSchema), async (req, res) => {
     appLogger.info("Get most commented movies requested");
     const filters = req.body;
-    const movies = await movieService.getMostCommentedMovies(filters);
+    const movies = await movieService.getMostCommented(filters);
     res.send(movies);
 })
 
 movieRoute.get("/:id", auth(authRules.movies.get), validator(movieSchemas.movieIdSchema, "params"), async (req, res, next) => {
     try {
         appLogger.info("Get movie from ID requested");
-        const movie = await movieService.getMovieById(req.params.id)
+        const movie = await movieService.getById(req.params.id)
         res.send(movie);
     } catch (e) {
         next(e);

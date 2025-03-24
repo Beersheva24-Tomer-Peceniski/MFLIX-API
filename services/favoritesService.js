@@ -12,7 +12,7 @@ class FavoriteService {
         if (oldFavorite) {
             throw createError(409, "This movie was already added as favorite")
         }
-        if (!(await movieRepository.getMovieById(favorite.movieId))) {
+        if (!(await movieRepository.getById(favorite.movieId))) {
             throw createError(404, "There is no movie with the inserted movie id");
         }
         if (!(await accountRepository.findByEmail(favorite.email))) {

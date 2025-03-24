@@ -3,7 +3,7 @@ import { createError } from "../errors/errors.js";
 
 class MovieRepository {
 
-    async getMovieById(movieId) {
+    async getById(movieId) {
         const moviesCollection = db.collection("movies");
         const movie = await moviesCollection.findOne({ _id: movieId });
         if (!movie) {
@@ -22,7 +22,7 @@ class MovieRepository {
         );
     }
 
-    async getMostRatedMovies(filter) {
+    async getMostRated(filter) {
         const moviesCollection = db.collection("movies");
         const amount = filter.amount || 10;
         delete filter.amount;
@@ -42,7 +42,7 @@ class MovieRepository {
             .toArray();
     }
 
-    async getMostCommentedMovies(filter) {
+    async getMostCommented(filter) {
         const moviesCollection = db.collection("movies");
         const amount = filter.amount || 10;
         delete filter.amount;

@@ -7,14 +7,14 @@ import JwtUtil from "../security/JwtUtil.js";
 class AccountService {
 
     addUser(user) {
-        return this.addAccount(user, accountRole.USER)
+        return this.add(user, accountRole.USER)
     }
 
     addAdmin(admin) {
-        return this.addAccount(admin, accountRole.ADMIN)
+        return this.add(admin, accountRole.ADMIN)
     }
 
-    async addAccount(account, role) {
+    async add(account, role) {
         const oldAccount = await accountRepository.findByEmail(account.email)
         if (oldAccount) {
             throw createError(409, "An account with this e-mail already exists")
@@ -61,7 +61,7 @@ class AccountService {
         return await accountRepository.findByEmail(email);
     }
 
-    async blockAccount(email) {
+    async block(email) {
         const oldAccount = await accountRepository.findByEmail(email)
         if (!oldAccount) {
             throw createError(404, "There is no account with the inserted email")
@@ -69,14 +69,14 @@ class AccountService {
         if (oldAccount.blocked) {
             throw createError(400, "Inserted account is already blocked")
         }
-        const blocked = await accountRepository.blockAccount(email);
+        const blocked = await accountRepository.block(email);
         if(!blocked) {
             throw createError(500, "It was not possible to block account");
         }
         return "Account successfully blocked"
     }
 
-    async unblockAccount(email) {
+    async unblock(email) {
         const oldAccount = await accountRepository.findByEmail(email)
         if (!oldAccount) {
             throw createError(404, "There is no account with the inserted email")
@@ -84,19 +84,19 @@ class AccountService {
         if (!oldAccount.blocked) {
             throw createError(400, "Inserted account is already unblocked")
         }
-        const unblocked = await accountRepository.unblockAccount(email);
+        const unblocked = await accountRepository.unblock(email);
         if(!unblocked) {
             throw createError(500, "It was not possible to unblock account");
         }
         return "Account successfully unblocked"
     }
 
-    async deleteAccount(email) {
+    async delete(email) {
         const oldAccount = await accountRepository.findByEmail(email)
         if (!oldAccount) {
             throw createError(404, "There is no account with the inserted email")
         }
-        const deleted = await accountRepository.deleteAccount(email);
+        const deleted = await accountRepository.delete(email);
         if(!deleted) {
             throw createError(500, "It was not possible to delete account");
         }

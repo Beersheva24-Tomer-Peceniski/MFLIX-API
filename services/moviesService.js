@@ -6,12 +6,12 @@ class MovieService {
         this.movieRepository = movieRepository;
     }
 
-    async getMovieById(movieId) {
+    async getById(movieId) {
         const movieIdObjectId = new ObjectId(movieId);
-        return await movieRepository.getMovieById(movieIdObjectId);
+        return await movieRepository.getById(movieIdObjectId);
     }
 
-    async getMostRatedMovies(filter) {
+    async getMostRated(filter) {
         if (filter.actor) {
             filter.cast = filter.actor;
             delete filter.actor;
@@ -22,11 +22,11 @@ class MovieService {
         if (filter.genres) {
             filter.genres = { $all: filter.genres }
         }
-        return await movieRepository.getMostRatedMovies(filter);
+        return await movieRepository.getMostRated(filter);
     }
 
-    async getMostCommentedMovies(filter) {
-        return await movieRepository.getMostCommentedMovies(filter);
+    async getMostCommented(filter) {
+        return await movieRepository.getMostCommented(filter);
     }
 
     async addRate(rateInfo) {

@@ -1,32 +1,32 @@
 import db from "../database/database.js";
 
 class CommentRepository {
-    async getCommentsByMovieId(movieId) {
+    async getByMovieId(movieId) {
         const commentsCollection = db.collection("comments");
         return commentsCollection.find({ movie_id: movieId })
             .project({ email: 1, text: 1, _id: 0 })
             .toArray();
     }
 
-    async getCommentsByEmail(email) {
+    async getByEmail(email) {
         const commentsCollection = db.collection("comments");
         return commentsCollection.find({ email: email }).toArray();
     }
 
-    async deleteCommentById(commentId) {
+    async delete(id) {
         const commentsCollection = db.collection("comments");
-        const comment = await commentsCollection.findOne({ _id: commentId });
-        const { deletedCount } = await commentsCollection.deleteOne({ _id: commentId });
+        const comment = await commentsCollection.findOne({ _id: id });
+        const { deletedCount } = await commentsCollection.deleteOne({ _id: id });
         return deletedCount == 0 ? null : comment;
     }
 
-    async addComment(comment) {
+    async add(comment) {
         const commentsCollection = db.collection("comments");
         const { insertedId } = await commentsCollection.insertOne(comment)
         return commentsCollection.findOne({ _id: insertedId });
     }
 
-    async updateComment(comment) {
+    async update(comment) {
         const commentsCollection = db.collection("comments");
         const { modifiedCount } = await commentsCollection.updateOne({ _id: comment.id, email: comment.email },
             [{ $set: { "text": comment.text } }]

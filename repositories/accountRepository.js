@@ -29,7 +29,7 @@ class AccountRepository {
         return modifiedCount == 0 ? null : accountsCollection.findOne({ email: account.email })
     }
 
-    async blockAccount(email) {
+    async block(email) {
         const accountsCollection = db.collection("accounts");
         const { modifiedCount } = await accountsCollection.updateOne({ email },
             { $set: { blocked: true } }
@@ -37,7 +37,7 @@ class AccountRepository {
         return modifiedCount != 0;
     }
 
-    async unblockAccount(email) {
+    async unblock(email) {
         const accountsCollection = db.collection("accounts");
         const { modifiedCount } = await accountsCollection.updateOne({ email },
             { $set: { blocked: false } }
@@ -45,7 +45,7 @@ class AccountRepository {
         return modifiedCount != 0;
     }
 
-    async deleteAccount(email) {
+    async delete(email) {
         const accountsCollection = db.collection("accounts");
         const { deletedCount } = await accountsCollection.deleteOne({ email });
         return deletedCount != 0;

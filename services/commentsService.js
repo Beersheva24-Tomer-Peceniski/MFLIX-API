@@ -9,35 +9,35 @@ class CommentService {
         this.commentsRepository = commentRepository;
     }
 
-    async getCommentsByMovieId(movieId) {
+    async getByMovieId(movieId) {
         const movieIdObjectId = new ObjectId(movieId);
-        return await commentRepository.getCommentsByMovieId(movieIdObjectId);
+        return await commentRepository.getByMovieId(movieIdObjectId);
     }
 
-    async getCommentsByEmail(email) {
-        return await commentRepository.getCommentsByEmail(email);
+    async getByEmail(email) {
+        return await commentRepository.getByEmail(email);
     }
 
-    async addComment(comment) {
+    async add(comment) {
         comment.movieId = new ObjectId(comment.movieId);
         comment.date = DateTime.utc().toFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZ");
-        const newComment = await commentRepository.addComment(comment);
+        const newComment = await commentRepository.add(comment);
         movieRepository.addCommentsNumber(comment.movie_id);
         return newComment;
     }
 
-    async updateComment(comment) {
+    async update(comment) {
         comment.id = new ObjectId(comment.commentId);
-        const updatedComment = await commentRepository.updateComment(comment);
+        const updatedComment = await commentRepository.update(comment);
         if(!updatedComment) {
             throw createError(400, "Comment not found");
         }
         return updatedComment;
     }
 
-    async deleteCommentById(commentId) {
-        commentId = new ObjectId(commentId);
-        const deletedComment = await commentRepository.deleteCommentById(commentId);
+    async delete(id) {
+        id = new ObjectId(id);
+        const deletedComment = await commentRepository.delete(id);
         if(!deletedComment) {
             throw createError(400, "Comment not found");
         }

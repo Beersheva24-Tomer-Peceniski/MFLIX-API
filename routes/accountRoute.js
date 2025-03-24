@@ -68,7 +68,7 @@ accountRoute.put("/password", auth(authRules.account.putPassword), validator(acc
 accountRoute.put("/block/:email", auth(authRules.account.putBlockOrUnblock), validator(accountSchemas.emailSchema, "params"), async (req, res, next) => {
     appLogger.info("Block Account requested")
     try {
-        const response = await accountService.blockAccount(req.params.email)
+        const response = await accountService.block(req.params.email)
         res.send(response)
     } catch (error) {
         next(error)
@@ -78,7 +78,7 @@ accountRoute.put("/block/:email", auth(authRules.account.putBlockOrUnblock), val
 accountRoute.put("/unblock/:email", auth(authRules.account.putBlockOrUnblock), validator(accountSchemas.emailSchema, "params"), async (req, res, next) => {
     appLogger.info("Unblock Account requested")
     try {
-        const response = await accountService.unblockAccount(req.params.email)
+        const response = await accountService.unblock(req.params.email)
         res.send(response)
     } catch (error) {
         next(error)
@@ -88,7 +88,7 @@ accountRoute.put("/unblock/:email", auth(authRules.account.putBlockOrUnblock), v
 accountRoute.delete("/:email", auth(authRules.account.delete), validator(accountSchemas.emailSchema, "params"), async (req, res, next) => {
     appLogger.info("Delete Account requested")
     try {
-        const response = await accountService.deleteAccount(req.params.email)
+        const response = await accountService.delete(req.params.email)
         res.send(response)
     } catch (error) {
         next(error)

@@ -34,7 +34,7 @@ async function getCommentsByEmail(email) {
     if (error) {
         throw createError(400, error.details.map(d => d.message).join(";"))
     }
-    return { status: 200, result: await commentService.getCommentsByEmail(email) }
+    return { status: 200, result: await commentService.getByEmail(email) }
 }
 
 async function getCommentsByMovieId(movieId) {
@@ -43,19 +43,19 @@ async function getCommentsByMovieId(movieId) {
     if (error) {
         throw createError(400, error.details.map(d => d.message).join(";"))
     }
-    return { status: 200, result: await commentService.getCommentsByMovieId(movieId) }
+    return { status: 200, result: await commentService.getByMovieId(movieId) }
 }
 
 commentRoute.post("/", auth(authRules.comments.post), validator(commentSchemas.addCommentSchema), async (req, res) => {
     appLogger.info("Post new comment requested");
-    const comment = await commentService.addComment(req.body);
+    const comment = await commentService.add(req.body);
     res.send(comment);
 })
 
 commentRoute.put("/", auth(authRules.comments.put), validator(commentSchemas.updateCommentSchema), async (req, res, next) => {
     appLogger.info("Update comment requested");
     try {
-        const comment = await commentService.updateComment(req.body);
+        const comment = await commentService.update(req.body);
         res.send(comment);
     } catch (error) {
         next(error)
@@ -65,7 +65,7 @@ commentRoute.put("/", auth(authRules.comments.put), validator(commentSchemas.upd
 commentRoute.delete("/:commentId", auth(authRules.comments.delete), validator(commentSchemas.commentIdSchema, "params"), async (req, res, next) => {
     appLogger.info("Delete comment requested");
     try {
-        const deletedComment = await commentService.deleteCommentById(req.params.commentId);
+        const deletedComment = await commentService.delete(req.params.commentId);
         res.send(deletedComment);
     } catch (error) {
         next(error)
