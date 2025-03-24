@@ -5,16 +5,10 @@ import favoritesService from "../services/favoritesService.js";
 import { validator } from "../middleware/validation.js";
 import { auth } from "../middleware/auth.js";
 import authRules from "../security/authRules.js";
-import { unless } from "express-unless";
 
 const favoritesRoute = express.Router();
 
-const authMiddleware = auth(authRules.FAVORITES);
-authMiddleware.unless = unless;
-
-favoritesRoute.use(authMiddleware.unless({ path: [{ method: "GET", url: /^\/favorites\/[^\/]+$/ }] }));
-
-favoritesRoute.get("/:email", authMiddleware, validator(favoriteSchemas.getByEmailSchema, "params"), async (req, res, next) => {
+favoritesRoute.get("/:email", auth(authRules.favorites.get), validator(favoriteSchemas.getByEmailSchema, "params"), async (req, res, next) => {
     appLogger.info("Get favorites by Email requested");
     try {
         const favorites = await favoritesService.getByEmail(req.params.email);
@@ -24,7 +18,7 @@ favoritesRoute.get("/:email", authMiddleware, validator(favoriteSchemas.getByEma
     }
 })
 
-favoritesRoute.post("/", validator(favoriteSchemas.addSchema), async (req, res, next) => {
+favoritesRoute.post("/", auth(authRules.favorites.post), validator(favoriteSchemas.addSchema), async (req, res, next) => {
     appLogger.info("Add favorite requested")
     try {
         const addedFavorite = await favoritesService.add(req.body);
@@ -34,7 +28,7 @@ favoritesRoute.post("/", validator(favoriteSchemas.addSchema), async (req, res, 
     }
 })
 
-favoritesRoute.put("/", validator(favoriteSchemas.updateSchema), async(req, res, next) => {
+favoritesRoute.put("/", auth(authRules.favorites.put), validator(favoriteSchemas.updateSchema), async(req, res, next) => {
     appLogger.info("Update favorite requested");
     try{
         const updatedFavorite = await favoritesService.update(req.body);
@@ -44,7 +38,7 @@ favoritesRoute.put("/", validator(favoriteSchemas.updateSchema), async(req, res,
     }
 })
 
-favoritesRoute.delete("/", validator(favoriteSchemas.deleteSchema), async(req, res, next) => {
+favoritesRoute.delete("/", auth(authRules.favorites.delete), validator(favoriteSchemas.deleteSchema), async(req, res, next) => {
     appLogger.info("Delete favorite requested");
     try{
         const deletedFavorite = await favoritesService.delete(req.body);

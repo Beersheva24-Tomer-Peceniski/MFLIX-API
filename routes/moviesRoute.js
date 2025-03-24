@@ -7,22 +7,21 @@ import authRules from "../security/authRules.js";
 import { auth } from "../middleware/auth.js";
 
 const moviesRoute = express.Router();
-moviesRoute.use(auth(authRules.MOVIES));
 
-moviesRoute.get("/most-rated", validator(movieSchemas.filterMoviesSchema), async (req, res) => {
+moviesRoute.get("/most-rated", auth(authRules.movies.get), validator(movieSchemas.filterMoviesSchema), async (req, res) => {
     appLogger.info("Get most rated movies requested");
     const movies = await moviesService.getMostRatedMovies(req.body);
     res.send(movies);
 })
 
-moviesRoute.get("/most-commented", validator(movieSchemas.filterMoviesSchema), async (req, res) => {
+moviesRoute.get("/most-commented", auth(authRules.movies.get), validator(movieSchemas.filterMoviesSchema), async (req, res) => {
     appLogger.info("Get most commented movies requested");
     const filters = req.body;
     const movies = await moviesService.getMostCommentedMovies(filters);
     res.send(movies);
 })
 
-moviesRoute.get("/:id", validator(movieSchemas.movieIdSchema, "params"), async (req, res, next) => {
+moviesRoute.get("/:id", auth(authRules.movies.get), validator(movieSchemas.movieIdSchema, "params"), async (req, res, next) => {
     try {
         appLogger.info("Get movie from ID requested");
         const movie = await moviesService.getMovieById(req.params.id)
@@ -32,7 +31,7 @@ moviesRoute.get("/:id", validator(movieSchemas.movieIdSchema, "params"), async (
     }
 })
 
-moviesRoute.post("/rating", validator(movieSchemas.ratingMovieSchema), async (req, res) => {
+moviesRoute.post("/rating", auth(authRules.movies.post), validator(movieSchemas.ratingMovieSchema), async (req, res) => {
     appLogger.info("Post new rate requested");
     const ratingInfo = req.body;
     const changedMovies = await moviesService.addRate(ratingInfo);

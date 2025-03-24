@@ -7,16 +7,10 @@ import commentSchemas from "../validation-schemas/comment-schemas.js";
 import { validator } from "../middleware/validation.js";
 import authRules from "../security/authRules.js";
 import { auth } from "../middleware/auth.js";
-import { unless } from "express-unless";
 
 const commentsRoute = express.Router();
 
-const authMiddleware = auth(authRules.COMMENTS);
-authMiddleware.unless = unless;
-
-commentsRoute.use(authMiddleware.unless({ path: [{ method: "DELETE", url: /^\/comments\/\w+$/ }] }));
-
-commentsRoute.get("/", async (req, res, next) => {
+commentsRoute.get("/", auth(authRules.comments.get), async (req, res, next) => {
     try {
         let result;
         let status;
@@ -52,13 +46,13 @@ async function getCommentsByMovieId(movieId) {
     return { status: 200, result: await commentsService.getCommentsByMovieId(movieId) }
 }
 
-commentsRoute.post("/", validator(commentSchemas.addCommentSchema), async (req, res) => {
+commentsRoute.post("/", auth(authRules.comments.post), validator(commentSchemas.addCommentSchema), async (req, res) => {
     appLogger.info("Post new comment requested");
     const comment = await commentsService.addComment(req.body);
     res.send(comment);
 })
 
-commentsRoute.put("/", validator(commentSchemas.updateCommentSchema), async (req, res, next) => {
+commentsRoute.put("/", auth(authRules.comments.put), validator(commentSchemas.updateCommentSchema), async (req, res, next) => {
     appLogger.info("Update comment requested");
     try {
         const comment = await commentsService.updateComment(req.body);
@@ -68,7 +62,7 @@ commentsRoute.put("/", validator(commentSchemas.updateCommentSchema), async (req
     }
 })
 
-commentsRoute.delete("/:commentId", authMiddleware, validator(commentSchemas.commentIdSchema, "params"), async (req, res, next) => {
+commentsRoute.delete("/:commentId", auth(authRules.comments.delete), validator(commentSchemas.commentIdSchema, "params"), async (req, res, next) => {
     appLogger.info("Delete comment requested");
     try {
         const deletedComment = await commentsService.deleteCommentById(req.params.commentId);

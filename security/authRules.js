@@ -2,38 +2,38 @@ import { createError } from "../errors/errors.js";
 import commentsService from "../services/commentsService.js";
 
 const authRules = {
-    MOVIES: {
-        GET: {
+    movies: {
+        get: {
             authentication: req => "jwt",
             authorization: req => req.role != "ADMIN"
         },
-        POST: {
+        post: {
             authentication: req => "jwt",
             authorization: req => req.role == "PREMIUM_USER"
         },
-        PUT: {
+        put: {
             authentication: req => "jwt",
             authorization: req => true
         },
-        DELETE: {
+        delete: {
             authentication: req => "jwt",
             authorization: req => true
         }
     },
-    COMMENTS: {
-        GET: {
+    comments: {
+        get: {
             authentication: req => "jwt",
             authorization: req => !!req.role,
         },
-        POST: {
+        post: {
             authentication: req => "jwt",
             authorization: req => req.role == "PREMIUM_USER"
         },
-        PUT: {
+        put: {
             authentication: req => "jwt",
             authorization: req => req.role == "PREMIUM_USER" && req.user == req.body.email
         },
-        DELETE: {
+        delete: {
             authentication: req => "jwt",
             authorization: async req => {
                 const comment = await commentsService.getById(req.params.commentId);
@@ -44,46 +44,46 @@ const authRules = {
             }
         }
     },
-    FAVORITES: {
-        GET: {
+    favorites: {
+        get: {
             authentication: req => "jwt",
             authorization: req => req.role == "PREMIUM_USER" && req.user == req.params.email
         },
-        POST: {
+        post: {
             authentication: req => "jwt",
             authorization: req => req.role == "PREMIUM_USER"
         },
-        PUT: {
+        put: {
             authentication: req => "jwt",
             authorization: req => req.role == "PREMIUM_USER" && req.user == req.body.email
         },
-        DELETE: {
+        delete: {
             authentication: req => "jwt",
             authorization: req => req.role == "PREMIUM_USER" && req.user == req.body.email
         }
     },
-    ACCOUNT: {
-        GET: {
+    account: {
+        get: {
             authentication: req => "jwt",
             authorization: req => req.role == "ADMIN" || req.user == req.params.email
         },
-        POST: {
+        post: {
             authentication: req => "basic",
             authorization: req => !!req.user && req.role == ""
         },
-        PUTPASSWORD: {
+        putPassword: {
             authentication: req => "jwt",
             authorization: req => req.role == "ADMIN" || req.user == req.body.email
         },
-        PUTROLE: {
+        putRole: {
             authentication: req => "jwt",
             authorization: req => req.role == "ADMIN"
         },
-        PUTBLOCKUNBLOCK: {
+        putBlockOrUnblock: {
             authentication: req => "jwt",
             authorization: req => req.role == "ADMIN"
         },
-        DELETE: {
+        delete: {
             authentication: req => "jwt",
             authorization: req => req.role == "ADMIN" || req.user == req.params.email
         }
