@@ -1,14 +1,14 @@
 import { ObjectId } from "mongodb";
-import moviesRepository from "../repositories/moviesRepository.js"
+import movieRepository from "../repositories/movieRepository.js"
 
 class MovieService {
     constructor() {
-        this.movieRepository = moviesRepository;
+        this.movieRepository = movieRepository;
     }
 
     async getMovieById(movieId) {
         const movieIdObjectId = new ObjectId(movieId);
-        return await moviesRepository.getMovieById(movieIdObjectId);
+        return await movieRepository.getMovieById(movieIdObjectId);
     }
 
     async getMostRatedMovies(filter) {
@@ -22,17 +22,17 @@ class MovieService {
         if (filter.genres) {
             filter.genres = { $all: filter.genres }
         }
-        return await moviesRepository.getMostRatedMovies(filter);
+        return await movieRepository.getMostRatedMovies(filter);
     }
 
     async getMostCommentedMovies(filter) {
-        return await moviesRepository.getMostCommentedMovies(filter);
+        return await movieRepository.getMostCommentedMovies(filter);
     }
 
     async addRate(rateInfo) {
-        return await moviesRepository.addRate(rateInfo);
+        return await movieRepository.addRate(rateInfo);
     }
 }
 
-const moviesService = new MovieService();
-export default moviesService;
+const movieService = new MovieService();
+export default movieService;

@@ -1,34 +1,34 @@
 import { ObjectId } from "mongodb";
-import commentsRepository from "../repositories/commentsRepository.js";
-import moviesRepository from "../repositories/moviesRepository.js";
+import commentRepository from "../repositories/commentRepository.js";
+import movieRepository from "../repositories/movieRepository.js";
 import { DateTime } from "luxon";
 import { createError } from "../errors/errors.js";
 
 class CommentService {
     constructor() {
-        this.commentsRepository = commentsRepository;
+        this.commentsRepository = commentRepository;
     }
 
     async getCommentsByMovieId(movieId) {
         const movieIdObjectId = new ObjectId(movieId);
-        return await commentsRepository.getCommentsByMovieId(movieIdObjectId);
+        return await commentRepository.getCommentsByMovieId(movieIdObjectId);
     }
 
     async getCommentsByEmail(email) {
-        return await commentsRepository.getCommentsByEmail(email);
+        return await commentRepository.getCommentsByEmail(email);
     }
 
     async addComment(comment) {
         comment.movieId = new ObjectId(comment.movieId);
         comment.date = DateTime.utc().toFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZ");
-        const newComment = await commentsRepository.addComment(comment);
-        moviesRepository.addCommentsNumber(comment.movie_id);
+        const newComment = await commentRepository.addComment(comment);
+        movieRepository.addCommentsNumber(comment.movie_id);
         return newComment;
     }
 
     async updateComment(comment) {
         comment.id = new ObjectId(comment.commentId);
-        const updatedComment = await commentsRepository.updateComment(comment);
+        const updatedComment = await commentRepository.updateComment(comment);
         if(!updatedComment) {
             throw createError(400, "Comment not found");
         }
@@ -37,7 +37,7 @@ class CommentService {
 
     async deleteCommentById(commentId) {
         commentId = new ObjectId(commentId);
-        const deletedComment = await commentsRepository.deleteCommentById(commentId);
+        const deletedComment = await commentRepository.deleteCommentById(commentId);
         if(!deletedComment) {
             throw createError(400, "Comment not found");
         }
@@ -46,9 +46,9 @@ class CommentService {
 
     getById(id) {
         const commentId = new ObjectId(id);
-        return commentsRepository.getById(commentId);
+        return commentRepository.getById(commentId);
     }
 }
 
-const commentsService = new CommentService();
-export default commentsService;
+const commentService = new CommentService();
+export default commentService;

@@ -1,6 +1,6 @@
 import { createError } from "../errors/errors.js";
 import JwtUtil from "../security/JwtUtil.js";
-import accountsService from "../services/accountsService.js";
+import accountService from "../services/accountService.js";
 
 const BEARER = "Bearer ";
 const BASIC = "Basic ";
@@ -42,9 +42,9 @@ async function basicAuthentication(req, authHeader) {
             req.authType = "basic"
         }
         else {
-            await accountsService.checkLogin(username, password);
+            await accountService.checkLogin(username, password);
             req.user = username;
-            req.role = await accountsService.fyndByEmail(username).role;
+            req.role = await accountService.fyndByEmail(username).role;
             req.authType = "basic"
         }
     } catch (error) {
@@ -64,7 +64,7 @@ export function auth(rules) {
                     throw createError(400, "Wrong credentials");
                 }
                 if (req.role != "") {
-                    if (await accountsService.isBlocked(req.user)) {
+                    if (await accountService.isBlocked(req.user)) {
                         throw createError(401, "Inserted user is blocked")
                     }
                 }

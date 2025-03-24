@@ -1,6 +1,6 @@
 import db from "../database/database.js";
 
-class FavoritesRepository {
+class FavoriteRepository {
 
     async add(favorite) {
         const favoritesCollection = db.collection("favorites");
@@ -39,5 +39,5 @@ class FavoritesRepository {
     }
 }
 
-const favoritesRepository = new FavoritesRepository();
-export default favoritesRepository;
+const favoriteRepository = new FavoriteRepository();
+export default favoriteRepository;

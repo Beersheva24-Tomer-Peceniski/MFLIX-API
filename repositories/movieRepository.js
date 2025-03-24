@@ -94,5 +94,5 @@ class MovieRepository {
     }
 }
 
-const moviesRepository = new MovieRepository();
-export default moviesRepository;
+const movieRepository = new MovieRepository();
+export default movieRepository;

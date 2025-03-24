@@ -1,6 +1,6 @@
 import { accountRole } from "../constants/constants.js";
 import { createError } from "../errors/errors.js";
-import accountsRepository from "../repositories/accountsRepository.js";
+import accountRepository from "../repositories/accountRepository.js";
 import bcrypt from "bcrypt";
 import JwtUtil from "../security/JwtUtil.js";
 
@@ -15,25 +15,25 @@ class AccountService {
     }
 
     async addAccount(account, role) {
-        const oldAccount = await accountsRepository.findByEmail(account.email)
+        const oldAccount = await accountRepository.findByEmail(account.email)
         if (oldAccount) {
             throw createError(409, "An account with this e-mail already exists")
         }
         account.role = role;
         account.blocked = false;
         account.password = await bcrypt.hash(account.password, 10);
-        return accountsRepository.addUser(account);
+        return accountRepository.addUser(account);
     }
 
     async updateRole(account) {
-        const oldAccount = await accountsRepository.findByEmail(account.email)
+        const oldAccount = await accountRepository.findByEmail(account.email)
         if (!oldAccount) {
             throw createError(404, "There is no account with the inserted email")
         }
         if (oldAccount.role == account.role) {
             throw createError(400, "Inserted role is the same as previous one")
         }
-        const updatedAccount = await accountsRepository.updateRole(account);
+        const updatedAccount = await accountRepository.updateRole(account);
         if (!updatedAccount) {
             throw createError(500, "It was not possible to update role")
         }
@@ -41,7 +41,7 @@ class AccountService {
     }
 
     async updatePassword(account) {
-        const oldAccount = await accountsRepository.findByEmail(account.email)
+        const oldAccount = await accountRepository.findByEmail(account.email)
         if (!oldAccount) {
             throw createError(404, "There is no account with the inserted email")
         }
@@ -50,7 +50,7 @@ class AccountService {
             throw createError(400, "Inserted password is the same as previous one")
         }
         account.password = await bcrypt.hash(account.password, 10);
-        const updatedAccount = await accountsRepository.updatePassword(account);
+        const updatedAccount = await accountRepository.updatePassword(account);
         if (!updatedAccount) {
             throw createError(500, "It was not possible to update password")
         }
@@ -58,18 +58,18 @@ class AccountService {
     }
 
     async fyndByEmail(email) {
-        return await accountsRepository.findByEmail(email);
+        return await accountRepository.findByEmail(email);
     }
 
     async blockAccount(email) {
-        const oldAccount = await accountsRepository.findByEmail(email)
+        const oldAccount = await accountRepository.findByEmail(email)
         if (!oldAccount) {
             throw createError(404, "There is no account with the inserted email")
         }
         if (oldAccount.blocked) {
             throw createError(400, "Inserted account is already blocked")
         }
-        const blocked = await accountsRepository.blockAccount(email);
+        const blocked = await accountRepository.blockAccount(email);
         if(!blocked) {
             throw createError(500, "It was not possible to block account");
         }
@@ -77,14 +77,14 @@ class AccountService {
     }
 
     async unblockAccount(email) {
-        const oldAccount = await accountsRepository.findByEmail(email)
+        const oldAccount = await accountRepository.findByEmail(email)
         if (!oldAccount) {
             throw createError(404, "There is no account with the inserted email")
         }
         if (!oldAccount.blocked) {
             throw createError(400, "Inserted account is already unblocked")
         }
-        const unblocked = await accountsRepository.unblockAccount(email);
+        const unblocked = await accountRepository.unblockAccount(email);
         if(!unblocked) {
             throw createError(500, "It was not possible to unblock account");
         }
@@ -92,11 +92,11 @@ class AccountService {
     }
 
     async deleteAccount(email) {
-        const oldAccount = await accountsRepository.findByEmail(email)
+        const oldAccount = await accountRepository.findByEmail(email)
         if (!oldAccount) {
             throw createError(404, "There is no account with the inserted email")
         }
-        const deleted = await accountsRepository.deleteAccount(email);
+        const deleted = await accountRepository.deleteAccount(email);
         if(!deleted) {
             throw createError(500, "It was not possible to delete account");
         }
@@ -104,7 +104,7 @@ class AccountService {
     }
 
     async checkLogin(email, password) {
-        const account = await accountsRepository.findByEmail(email);
+        const account = await accountRepository.findByEmail(email);
         if (!account || !(await bcrypt.compare(password, account.password))) {
             throw createError(400, "Wrong credentials")
         }
@@ -112,7 +112,7 @@ class AccountService {
 
     async login(account) {
         await this.checkLogin(account.email, account.password)
-        account = await accountsRepository.findByEmail(account.email);
+        account = await accountRepository.findByEmail(account.email);
         if(account.blocked) {
             throw createError(400, "Inserted account is blocked")
         }
@@ -120,9 +120,9 @@ class AccountService {
     }
 
     isBlocked(email) {
-        return accountsRepository.isBlocked(email);
+        return accountRepository.isBlocked(email);
     }
 }
 
-const accountsService = new AccountService();
-export default accountsService;
+const accountService = new AccountService();
+export default accountService;

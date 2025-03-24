@@ -1,6 +1,6 @@
 import db from "../database/database.js";
 
-class AccountsRepository {
+class AccountRepository {
 
     async addUser(user) {
         const accountsCollection = db.collection("accounts");
@@ -58,5 +58,5 @@ class AccountsRepository {
     }
 }
 
-const accountsRepository = new AccountsRepository();
-export default accountsRepository;
+const accountRepository = new AccountRepository();
+export default accountRepository;

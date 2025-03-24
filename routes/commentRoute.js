@@ -1,16 +1,16 @@
 import express from "express";
-import commentsService from "../services/commentsService.js";
+import commentService from "../services/commentsService.js";
 import appLogger from "../logger/appLogger.js";
-import { movieIdSchema } from "../validation-schemas/movie-schemas.js";
+import { movieIdSchema } from "../schemas/movieSchemas.js";
 import { createError } from "../errors/errors.js";
-import commentSchemas from "../validation-schemas/comment-schemas.js";
-import { validator } from "../middleware/validation.js";
+import commentSchemas from "../schemas/commentSchemas.js";
+import { validator } from "../middlewares/validation.js";
 import authRules from "../security/authRules.js";
-import { auth } from "../middleware/auth.js";
+import { auth } from "../middlewares/auth.js";
 
-const commentsRoute = express.Router();
+const commentRoute = express.Router();
 
-commentsRoute.get("/", auth(authRules.comments.get), async (req, res, next) => {
+commentRoute.get("/", auth(authRules.comments.get), async (req, res, next) => {
     try {
         let result;
         let status;
@@ -34,7 +34,7 @@ async function getCommentsByEmail(email) {
     if (error) {
         throw createError(400, error.details.map(d => d.message).join(";"))
     }
-    return { status: 200, result: await commentsService.getCommentsByEmail(email) }
+    return { status: 200, result: await commentService.getCommentsByEmail(email) }
 }
 
 async function getCommentsByMovieId(movieId) {
@@ -43,33 +43,33 @@ async function getCommentsByMovieId(movieId) {
     if (error) {
         throw createError(400, error.details.map(d => d.message).join(";"))
     }
-    return { status: 200, result: await commentsService.getCommentsByMovieId(movieId) }
+    return { status: 200, result: await commentService.getCommentsByMovieId(movieId) }
 }
 
-commentsRoute.post("/", auth(authRules.comments.post), validator(commentSchemas.addCommentSchema), async (req, res) => {
+commentRoute.post("/", auth(authRules.comments.post), validator(commentSchemas.addCommentSchema), async (req, res) => {
     appLogger.info("Post new comment requested");
-    const comment = await commentsService.addComment(req.body);
+    const comment = await commentService.addComment(req.body);
     res.send(comment);
 })
 
-commentsRoute.put("/", auth(authRules.comments.put), validator(commentSchemas.updateCommentSchema), async (req, res, next) => {
+commentRoute.put("/", auth(authRules.comments.put), validator(commentSchemas.updateCommentSchema), async (req, res, next) => {
     appLogger.info("Update comment requested");
     try {
-        const comment = await commentsService.updateComment(req.body);
+        const comment = await commentService.updateComment(req.body);
         res.send(comment);
     } catch (error) {
         next(error)
     }
 })
 
-commentsRoute.delete("/:commentId", auth(authRules.comments.delete), validator(commentSchemas.commentIdSchema, "params"), async (req, res, next) => {
+commentRoute.delete("/:commentId", auth(authRules.comments.delete), validator(commentSchemas.commentIdSchema, "params"), async (req, res, next) => {
     appLogger.info("Delete comment requested");
     try {
-        const deletedComment = await commentsService.deleteCommentById(req.params.commentId);
+        const deletedComment = await commentService.deleteCommentById(req.params.commentId);
         res.send(deletedComment);
     } catch (error) {
         next(error)
     }
 })
 
-export default commentsRoute;
+export default commentRoute;

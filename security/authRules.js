@@ -1,5 +1,5 @@
 import { createError } from "../errors/errors.js";
-import commentsService from "../services/commentsService.js";
+import commentService from "../services/commentsService.js";
 
 const authRules = {
     movies: {
@@ -36,7 +36,7 @@ const authRules = {
         delete: {
             authentication: req => "jwt",
             authorization: async req => {
-                const comment = await commentsService.getById(req.params.commentId);
+                const comment = await commentService.getById(req.params.commentId);
                 if (!comment) {
                     throw createError(400, "Comment not found");
                 }
