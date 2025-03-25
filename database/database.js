@@ -3,10 +3,8 @@ import { MongoClient } from "mongodb";
 import appLogger from "../logger/appLogger.js";
 
 configDotenv();
-const mongoPassword = process.env.MONGO_PASSWORD;
-const mongoUser = process.env.MONGO_USER;
 
-const uri = `mongodb+srv://${mongoUser}:${mongoPassword}@cluster0.hwc10.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+const uri = process.env.MONGO_URI;
 const client = new MongoClient(uri);
 
 async function connectDB() {
