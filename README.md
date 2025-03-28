@@ -1,6 +1,8 @@
 # MFLIX
 MFLIX is a RESTful API application for managing and exploring movie data. It provides features such as user authentication, movie rating and commenting, managing favorite movies, and searching for movies using custom filters.
 
+---
+
 ## Features
 ### Movies
 - Find movies with customized filters  (year, genre, language, actor, etc.) 
@@ -25,6 +27,8 @@ MFLIX is a RESTful API application for managing and exploring movie data. It pro
 ### Validation
 In order to guarantee structure and constraints, all request inputs are validated. This ensures that the data persisted to the database is clean, consistent, and free from unexpected inputs.
 
+---
+
 ## Technologies
 - **Node.js** – JavaScript runtime for building the backend
 - **Express** – Framework for routing and handling HTTP requests
@@ -35,6 +39,8 @@ In order to guarantee structure and constraints, all request inputs are validate
 - **Morgan** – HTTP request logging
 - **Winston** – Logging library for custom logs and log levels
 
+---
+
 ## Getting Started
 Follow these steps to set up the MFLIX project on your local machine
 
@@ -42,11 +48,10 @@ Follow these steps to set up the MFLIX project on your local machine
 Make sure you have the following installed
 - Node.js
 - npm or Yarn
-
-To run this project, you need your own [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) cluster.
+> To run this project, you need your own [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) cluster.
 
 ### Clone the repository
-```
+```batch
 git clone https://github.com/tomerpeceniski/MFLIX-API.git
 cd mflix-api
 ```
@@ -57,7 +62,7 @@ Create a `.env` file using `.env.example` as a template and fill in your own cre
 1. Sign up at [mongodb.com](https://www.mongodb.com/)
 2. Create a free shared cluster
 3. Add a new database user (username + password) in the database access session
-4. Add your IP to the access list (or use 0.0.0.0/0 for testing)
+4. Add your IP (or use 0.0.0.0/0 for testing) in the network access session
 5. Go to Clusters → Connect → Drivers → Copy the provided URI
 6. In your `.env` file, paste your URI and fill it with your user data
 
@@ -65,9 +70,9 @@ Create a `.env` file using `.env.example` as a template and fill in your own cre
 ```npm install```
 
 ### Run the server
-```npm run dev```
+- ```npm run dev``` for running with the dev profile
+- ```npm run start``` for running with the production
 
-### Test the API
+---
 
-## License
-This project was created by [tomerpeceniski](https://github.com/tomerpeceniski)
+This project was created by [tomerpeceniski](https://www.linkedin.com/in/tomerpeceniski/)
