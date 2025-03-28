@@ -4,28 +4,33 @@ MFLIX is a RESTful API application for managing and exploring movie data. It pro
 ---
 
 ## Features
+
 ### Movies
-- Find movies with customized filters  (year, genre, language, actor, etc.) 
-- Retrieve most rated and most commented movies
-- Submit and update ratings
+- **Search movies** using filters like year, genre, language, or actor
+- **Get top movies** by number of ratings or comments
+- **Rate movies** (add or update your score)
+  
 ### Comments
-- View all comments from a movie
-- View all comments from a user
-- Add, update and delete comments (with role-based permissions)
+- **View comments** by movie or by user
+- **Add, update, and delete comments** *(with role-based permissions)*
+
 ### Favorites
-- Add, update and delete movies from the favorites list
-- Get favorites list from a user
+- **Manage favorites list** – add, update, and delete entries
+- **Get a user’s favorites**
+  
 ### Accounts
-- Add users and admins
-- Update account role (USER, PREMIUM_USER, ADMIN)
-- Update password with validation
-- Block and unblock accounts
-- Secure login with JWT token generation
+- **Create accounts** (users and admins)
+- **Change roles** (`USER`, `PREMIUM_USER`, `ADMIN`)
+- **Update password**
+- **Block and Unblock**
+- **Login securely** with JWT token
+  
 ### Security
-- JWT and Basic Authentication for ensuring that the requester is a valid user
-- Role-based Authorization for ensuring that the requester has permission to perform certain action
+- **JWT and Basic Auth** for identity validation
+- **Role-based Authorization** for access control
+  
 ### Validation
-In order to guarantee structure and constraints, all request inputs are validated. This ensures that the data persisted to the database is clean, consistent, and free from unexpected inputs.
+- All requests are validated with Joi to ensure clean, consistent, and structured data
 
 ---
 
