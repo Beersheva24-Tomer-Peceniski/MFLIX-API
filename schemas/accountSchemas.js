@@ -8,7 +8,7 @@ const nameValidation = Joi.string()
     .max(50)
     .custom((value, helpers) => {
         if (!value.includes(" ")) {
-            return helpers.error("any.invalid", "Please insert at least one last name");
+            return helpers.error('any.invalid', { message: 'Please insert at least one last name' });
         }
         return value;
     })

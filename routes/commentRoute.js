@@ -4,7 +4,7 @@ import appLogger from "../logger/appLogger.js";
 import { movieIdSchema } from "../schemas/movieSchemas.js";
 import { createError } from "../errors/errors.js";
 import commentSchemas from "../schemas/commentSchemas.js";
-import { validator } from "../middlewares/validation.js";
+import { validator, formatJoiErrors } from "../middlewares/validation.js";
 import authRules from "../security/authRules.js";
 import { auth } from "../middlewares/auth.js";
 
@@ -34,7 +34,8 @@ async function getCommentsByEmail(email) {
     appLogger.info("Get comments by email requested");
     const { error } = commentSchemas.emailSchema.validate({ email });
     if (error) {
-        throw createError(400, error.details.map(d => d.message).join(";"))
+        const errorObject = formatJoiErrors(error);
+        throw createError(400, errorObject);
     }
     return { status: 200, result: await commentService.getByEmail(email) }
 }
@@ -43,7 +44,8 @@ async function getCommentsByMovieId(movieId) {
     appLogger.info("Get comments by movie ID requested");
     const { error } = movieIdSchema.validate({ id: movieId });
     if (error) {
-        throw createError(400, error.details.map(d => d.message).join(";"))
+        const errorObject = formatJoiErrors(error);
+        throw createError(400, errorObject);
     }
     return { status: 200, result: await commentService.getByMovieId(movieId) }
 }
@@ -52,11 +54,13 @@ async function getCommentsByMovieIdAndEmail(movieId, email) {
     appLogger.info("Get comments by movie ID and email requested");
     const { error: movieError } = movieIdSchema.validate({ id: movieId });
     if (movieError) {
-        throw createError(400, movieError.details.map(d => d.message).join(";"))
+        const errorObject = formatJoiErrors(movieError);
+        throw createError(400, errorObject);
     }
     const { error: emailError } = commentSchemas.emailSchema.validate({ email });
     if (emailError) {
-        throw createError(400, emailError.details.map(d => d.message).join(";"))
+        const errorObject = formatJoiErrors(emailError);
+        throw createError(400, errorObject);
     }
     return { status: 200, result: await commentService.getByMovieIdAndEmail(movieId, email) }
 }
