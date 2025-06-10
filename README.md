@@ -1,6 +1,21 @@
 # MFLIX
 MFLIX is a RESTful API application for managing and exploring movie data. It provides features such as user authentication, movie rating and commenting, managing favorite movies, and searching for movies using custom filters.
 
+---
+
+## Test the API in Production
+
+You are welcome to test the MFLIX API live in production! All endpoints are fully documented and ready for you to explore:
+
+**API Documentation & Live Testing:**
+[ Postman Documentation](https://documenter.getpostman.com/view/25248121/2sB2qcCM26)
+
+- All endpoints and request/response examples are available in the documentation.
+- You can use pre-created user tokens (with different roles) for testing protected routes.
+- Try out authentication, movie search, comments, favorites, and more directly from the documentation interface.
+
+---
+
 ## Features
 ### Movies
 - Find movies with customized filters  (year, genre, language, actor, etc.) 
@@ -46,7 +61,7 @@ Make sure you have the following installed
 To run this project, you need your own [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) cluster.
 
 ### Clone the repository
-```
+```bash
 git clone https://github.com/tomerpeceniski/MFLIX-API.git
 cd mflix-api
 ```
@@ -62,12 +77,17 @@ Create a `.env` file using `.env.example` as a template and fill in your own cre
 6. In your `.env` file, paste your URI and fill it with your user data
 
 ### Install Dependencies
-```npm install```
+```bash
+npm install
+```
 
 ### Run the server
-```npm run dev```
+```bash
+npm run dev
+```
 
 ### Test the API
+- Use the [Postman Documentation & Live API](https://documenter.getpostman.com/view/25248121/2sB2qcCM26) for all endpoints, request/response examples, and live testing.
 
 ## License
 This project was created by [tomerpeceniski](https://github.com/tomerpeceniski)
