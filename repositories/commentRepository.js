@@ -13,6 +13,13 @@ class CommentRepository {
         return commentsCollection.find({ email: email }).toArray();
     }
 
+    async getByMovieIdAndEmail(movieId, email) {
+        const commentsCollection = db.collection("comments");
+        return commentsCollection.find({ movie_id: movieId, email: email })
+            .project({ email: 1, text: 1, _id: 0 })
+            .toArray();
+    }
+
     async delete(id) {
         const commentsCollection = db.collection("comments");
         const comment = await commentsCollection.findOne({ _id: id });

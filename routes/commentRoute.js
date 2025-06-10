@@ -14,7 +14,9 @@ commentRoute.get("/", auth(authRules.comments.get), async (req, res, next) => {
     try {
         let result;
         let status;
-        if (req.query.movieId) {
+        if (req.query.movieId && req.query.email) {
+            ({ status, result } = await getCommentsByMovieIdAndEmail(req.query.movieId, req.query.email))
+        } else if (req.query.movieId) {
             ({ status, result } = await getCommentsByMovieId(req.query.movieId))
         } else if (req.query.email) {
             ({ status, result } = await getCommentsByEmail(req.query.email))
@@ -39,11 +41,24 @@ async function getCommentsByEmail(email) {
 
 async function getCommentsByMovieId(movieId) {
     appLogger.info("Get comments by movie ID requested");
-    const { error } = movieIdSchema.validate({ movieId });
+    const { error } = movieIdSchema.validate({ id: movieId });
     if (error) {
         throw createError(400, error.details.map(d => d.message).join(";"))
     }
     return { status: 200, result: await commentService.getByMovieId(movieId) }
+}
+
+async function getCommentsByMovieIdAndEmail(movieId, email) {
+    appLogger.info("Get comments by movie ID and email requested");
+    const { error: movieError } = movieIdSchema.validate({ id: movieId });
+    if (movieError) {
+        throw createError(400, movieError.details.map(d => d.message).join(";"))
+    }
+    const { error: emailError } = commentSchemas.emailSchema.validate({ email });
+    if (emailError) {
+        throw createError(400, emailError.details.map(d => d.message).join(";"))
+    }
+    return { status: 200, result: await commentService.getByMovieIdAndEmail(movieId, email) }
 }
 
 commentRoute.post("/", auth(authRules.comments.post), validator(commentSchemas.addCommentSchema), async (req, res) => {

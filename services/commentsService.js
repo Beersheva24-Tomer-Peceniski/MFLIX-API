@@ -18,11 +18,16 @@ class CommentService {
         return await commentRepository.getByEmail(email);
     }
 
+    async getByMovieIdAndEmail(movieId, email) {
+        const movieIdObjectId = new ObjectId(movieId);
+        return await commentRepository.getByMovieIdAndEmail(movieIdObjectId, email);
+    }
+
     async add(comment) {
         comment.movieId = new ObjectId(comment.movieId);
         comment.date = DateTime.utc().toFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZ");
         const newComment = await commentRepository.add(comment);
-        movieRepository.addCommentsNumber(comment.movie_id);
+        movieRepository.addCommentsNumber(comment.movieId);
         return newComment;
     }
 
