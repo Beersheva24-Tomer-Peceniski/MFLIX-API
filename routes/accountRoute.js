@@ -5,7 +5,10 @@ import accountService from "../services/accountService.js";
 import { validator } from "../middlewares/validation.js";
 import { auth } from "../middlewares/auth.js";
 import authRules from "../security/authRules.js";
+import { isProtectedUser } from "../util/protectedUsers.js";
+import { createError } from "../errors/errors.js";
 
+const isProduction = process.env.NODE_ENV === "production";
 
 const accountRoute = express.Router();
 
@@ -39,7 +42,7 @@ accountRoute.post("/login", validator(accountSchemas.loginSchema), async (req, r
     appLogger.info("Login requested");
     try {
         const token = await accountService.login(req.body)
-        res.send({token})
+        res.send({ token })
     } catch (error) {
         next(error)
     }
@@ -68,8 +71,11 @@ accountRoute.put("/password", auth(authRules.account.putPassword), validator(acc
 accountRoute.put("/block/:email", auth(authRules.account.putBlockOrUnblock), validator(accountSchemas.emailSchema, "params"), async (req, res, next) => {
     appLogger.info("Block Account requested")
     try {
+        if (isProduction && isProtectedUser(req.params.email)) {
+            throw createError(403, "This user is protected and cannot be deleted or blocked in production.");
+        }
         const response = await accountService.block(req.params.email)
-        res.send({"message": response})
+        res.send({ "message": response })
     } catch (error) {
         next(error)
     }
@@ -79,7 +85,7 @@ accountRoute.put("/unblock/:email", auth(authRules.account.putBlockOrUnblock), v
     appLogger.info("Unblock Account requested")
     try {
         const response = await accountService.unblock(req.params.email)
-        res.send({"message": response})
+        res.send({ "message": response })
     } catch (error) {
         next(error)
     }
@@ -88,8 +94,11 @@ accountRoute.put("/unblock/:email", auth(authRules.account.putBlockOrUnblock), v
 accountRoute.delete("/:email", auth(authRules.account.delete), validator(accountSchemas.emailSchema, "params"), async (req, res, next) => {
     appLogger.info("Delete Account requested")
     try {
+        if (isProduction && isProtectedUser(req.params.email)) {
+            throw createError(403, "This user is protected and cannot be deleted or blocked in production.");
+        }
         const response = await accountService.delete(req.params.email)
-        res.send({"message" : response})
+        res.send({ "message": response })
     } catch (error) {
         next(error)
     }

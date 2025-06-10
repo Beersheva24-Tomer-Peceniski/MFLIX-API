@@ -41,6 +41,7 @@ jobs:
             echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
             echo "ADMIN_USERNAME=${{ secrets.ADMIN_USERNAME }}" >> .env
             echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> .env
+            echo "PROTECTED_USERS=${{ secrets.PROTECTED_USERS }}" >> .env
             echo "NODE_ENV=production" >> .env
 
             docker stop mflix || true
