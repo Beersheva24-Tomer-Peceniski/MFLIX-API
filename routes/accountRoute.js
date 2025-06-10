@@ -39,7 +39,7 @@ accountRoute.post("/login", validator(accountSchemas.loginSchema), async (req, r
     appLogger.info("Login requested");
     try {
         const token = await accountService.login(req.body)
-        res.send(token)
+        res.send({token})
     } catch (error) {
         next(error)
     }
@@ -69,7 +69,7 @@ accountRoute.put("/block/:email", auth(authRules.account.putBlockOrUnblock), val
     appLogger.info("Block Account requested")
     try {
         const response = await accountService.block(req.params.email)
-        res.send(response)
+        res.send({"message": response})
     } catch (error) {
         next(error)
     }
@@ -79,7 +79,7 @@ accountRoute.put("/unblock/:email", auth(authRules.account.putBlockOrUnblock), v
     appLogger.info("Unblock Account requested")
     try {
         const response = await accountService.unblock(req.params.email)
-        res.send(response)
+        res.send({"message": response})
     } catch (error) {
         next(error)
     }
@@ -89,7 +89,7 @@ accountRoute.delete("/:email", auth(authRules.account.delete), validator(account
     appLogger.info("Delete Account requested")
     try {
         const response = await accountService.delete(req.params.email)
-        res.send(response)
+        res.send({"message" : response})
     } catch (error) {
         next(error)
     }
