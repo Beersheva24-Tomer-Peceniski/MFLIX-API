@@ -59,13 +59,16 @@ export function auth(rules) {
             if (!authorization) {
                 throw createError(500, "Security configuration not provided");
             }
+            if(!req.header("Authorization")) {
+                throw createError(401, "Missing security configuration")
+            }
             if (authentication(req)) {
                 if (!req.user) {
                     throw createError(400, "Wrong credentials");
                 }
                 if (req.role != "") {
-                    if (await accountService.isBlocked(req.user)) {
-                        throw createError(401, "Inserted user is blocked")
+                    if (!(await accountService.fyndByEmail(req.user)) || await accountService.isBlocked(req.user)) {
+                        throw createError(401, "Invalid logged user")
                     }
                 }
                 if (req.authType != authentication(req)) {
