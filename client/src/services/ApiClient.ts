@@ -1,6 +1,7 @@
 // services/ApiClient.ts
 import axios, { type AxiosInstance } from "axios";
 import type Login from '../models/Login';
+import type Pagination from "../models/Pagination";
 
 class ApiClient {
   private axiosInstance: AxiosInstance;
@@ -24,8 +25,8 @@ class ApiClient {
     return axios.post<{ token: string }>('/api/accounts/login', loginData); // separate login (no token)
   }
 
-  getMovies(page: number, limit: number) {
-    return this.axiosInstance.get('/movies', {
+  getMovies(page?: number, limit?: number) {
+    return this.axiosInstance.get<Pagination>('/movies', {
       params: { page, limit },
     });
   }
