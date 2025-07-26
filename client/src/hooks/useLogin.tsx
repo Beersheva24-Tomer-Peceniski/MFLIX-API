@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import apiClient from '../services/ApiClient';
 
 export interface LoginError {
   emailError: string | null;
@@ -14,60 +15,55 @@ const initialError: LoginError = {
 };
 
 function useLogin() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<LoginError>(initialError);
-    const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<LoginError>(initialError);
+  const navigate = useNavigate();
 
-    async function login() {
-        setLoading(true);
-        setError(initialError);
-        try {
-            const response = await fetch('api/accounts/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, password }),
-            });
+  async function login() {
+    setLoading(true);
+    setError(initialError);
+    try {
+      const response = await apiClient.login({ email, password });
+      const token = response.data.token;
 
-            const result = await response.json();
+      // Token returned → store it and navigate
+      localStorage.setItem('token', token);
+      navigate('/');
+    } catch (err: any) {
+      let newError: LoginError = { ...initialError };
 
-            if (!response.ok) {
-                let newError: LoginError = { ...initialError };
-                if (result && result.error) {
-                    if (result.error.email) newError.emailError = result.error.email;
-                    if (result.error.password) newError.passwordError = result.error.password;
-                    if (!result.error.email && !result.error.password) {
-                        newError.general = typeof result.error === 'string' ? result.error : JSON.stringify(result.error);
-                    }
-                } else {
-                    newError.general = result.message || 'Something went wrong';
-                }
-                setError(newError);
-                return;
-            }
-
-            // Success
-            localStorage.setItem("token", result.token);
-            navigate('/');
-        } catch (err: any) {
-            setError({ ...initialError, general: err.message || 'Something went wrong' });
-        } finally {
-            setLoading(false);
+      // Backend error response
+      const serverError = err.response?.data?.error;
+      if (serverError) {
+        if (serverError.email) newError.emailError = serverError.email;
+        if (serverError.password) newError.passwordError = serverError.password;
+        if (!serverError.email && !serverError.password) {
+          newError.general = typeof serverError === 'string'
+            ? serverError
+            : JSON.stringify(serverError);
         }
-    }
+      } else {
+        // Network error or unexpected
+        newError.general = err.message || 'Something went wrong';
+      }
 
-    return {
-        email,
-        setEmail,
-        password,
-        setPassword,
-        loading,
-        error,
-        login,
-    };
+      setError(newError);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    loading,
+    error,
+    login,
+  };
 }
 
 export default useLogin;
