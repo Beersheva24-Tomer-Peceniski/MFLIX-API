@@ -25,10 +25,8 @@ export default function Layout() {
   return (
     <Box
       display="grid"
-      minHeight="100vh"
-      minWidth="100vw"
-      gridTemplateRows="10% 90%"
-      gridTemplateColumns="20% 80%"
+      gridTemplateRows="50px 1fr"
+      gridTemplateColumns="270px 1fr"
     >
       <Box gridColumn="1 / span 2" bgcolor="#333" color="#fff" display="flex" alignItems="center" justifyContent="center">
         My MFLIX Header

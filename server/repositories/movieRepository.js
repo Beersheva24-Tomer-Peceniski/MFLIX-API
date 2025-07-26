@@ -99,7 +99,16 @@ class MovieRepository {
         const skip = (page - 1) * limit;
 
         const movies = await moviesCollection.find({})
-            .project({ _id: 1, title: 1, "imdb.rating": 1, "imdb.id": 1 })
+            .project({
+                _id: 1,
+                title: 1,
+                "imdb.rating": 1,
+                plot: 1,
+                poster: 1,
+                num_mflix_comments: 1,
+                year: 1,
+                fullplot: 1
+            })
             .skip(skip)
             .limit(limit)
             .toArray();
@@ -111,12 +120,13 @@ class MovieRepository {
             limit,
             total,
             totalPages: Math.ceil(total / limit),
-            movies: movies.map(movie => ({
-                _id: movie._id,
-                title: movie.title,
-                imdbId: movie.imdb?.id || null,
-                rating: movie.imdb?.rating || null,
-            }))
+            movies: movies.map(movie => {
+                const { imdb, ...rest } = movie;
+                return {
+                    ...rest,
+                    rating: imdb?.rating ?? null
+                };
+            })
         };
     }
 

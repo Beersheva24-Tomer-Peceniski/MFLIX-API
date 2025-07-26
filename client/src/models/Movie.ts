@@ -1,6 +1,10 @@
 export default interface Movie {
     _id: string;
     title: string;
-    imdbId: number;
     rating: number;
+    plot: string,
+    poster: string,
+    num_mflix_comments: number,
+    year: number,
+    fullplot: string
 }
