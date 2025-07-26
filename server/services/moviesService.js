@@ -32,6 +32,10 @@ class MovieService {
     async addRate(rateInfo) {
         return await movieRepository.addRate(rateInfo);
     }
+
+    async getPaginated(page, limit) {
+        return await movieRepository.getPaginated(page, limit);
+    }
 }
 
 const movieService = new MovieService();

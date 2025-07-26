@@ -92,6 +92,34 @@ class MovieRepository {
         )
         return modifiedCount;
     }
+
+    async getPaginated(page, limit) {
+        const moviesCollection = db.collection("movies");
+
+        const skip = (page - 1) * limit;
+
+        const movies = await moviesCollection.find({})
+            .project({ _id: 1, title: 1, "imdb.rating": 1, "imdb.id": 1 })
+            .skip(skip)
+            .limit(limit)
+            .toArray();
+
+        const total = await moviesCollection.countDocuments();
+
+        return {
+            page,
+            limit,
+            total,
+            totalPages: Math.ceil(total / limit),
+            movies: movies.map(movie => ({
+                _id: movie._id,
+                title: movie.title,
+                imdbId: movie.imdb?.id || null,
+                rating: movie.imdb?.rating || null,
+            }))
+        };
+    }
+
 }
 
 const movieRepository = new MovieRepository();
