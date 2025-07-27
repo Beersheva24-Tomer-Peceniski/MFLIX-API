@@ -1,5 +1,6 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import { Box } from '@mui/material';
+import Header from '../../components/Header';
 
 export default function Layout() {
   const location = useLocation();
@@ -29,7 +30,7 @@ export default function Layout() {
       gridTemplateColumns="270px 1fr"
     >
       <Box gridColumn="1 / span 2" bgcolor="#333" color="#fff" display="flex" alignItems="center" justifyContent="center">
-        My MFLIX Header
+        <Header/>
       </Box>
 
       <Box gridRow="2" gridColumn="1" bgcolor="#111" color="#fff" p={2}>
