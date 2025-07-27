@@ -8,6 +8,18 @@ import { auth } from "../middlewares/auth.js";
 
 const movieRoute = express.Router();
 
+movieRoute.get("/", auth(authRules.movies.get), async (req, res) => {
+    appLogger.info("Paginated movies requested");
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const year = req.query.year ? parseInt(req.query.year) : null;
+    const movieTitle = req.query.movieTitle || null;
+
+    const result = await movieService.getPaginated(page, limit, { year, movieTitle });
+    res.send(result);
+});
+
 movieRoute.get("/most-rated", auth(authRules.movies.get), validator(movieSchemas.filterMoviesSchema), async (req, res) => {
     appLogger.info("Get most rated movies requested");
     const movies = await movieService.getMostRated(req.body);

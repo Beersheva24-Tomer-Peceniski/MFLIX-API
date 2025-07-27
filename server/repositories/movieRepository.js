@@ -92,6 +92,55 @@ class MovieRepository {
         )
         return modifiedCount;
     }
+
+    async getPaginated(page, limit, filters = {}) {
+        const moviesCollection = db.collection("movies");
+
+        const skip = (page - 1) * limit;
+
+        // Build query based on filters
+        const query = {};
+        
+        if (filters.year) {
+            query.year = filters.year;
+        }
+        
+        if (filters.movieTitle) {
+            query.title = { $regex: filters.movieTitle, $options: 'i' };
+        }
+
+        const movies = await moviesCollection.find(query)
+            .project({
+                _id: 1,
+                title: 1,
+                "imdb.rating": 1,
+                plot: 1,
+                poster: 1,
+                num_mflix_comments: 1,
+                year: 1,
+                fullplot: 1
+            })
+            .skip(skip)
+            .limit(limit)
+            .toArray();
+
+        const total = await moviesCollection.countDocuments(query);
+
+        return {
+            page,
+            limit,
+            total,
+            totalPages: Math.ceil(total / limit),
+            movies: movies.map(movie => {
+                const { imdb, ...rest } = movie;
+                return {
+                    ...rest,
+                    rating: imdb?.rating ?? null
+                };
+            })
+        };
+    }
+
 }
 
 const movieRepository = new MovieRepository();

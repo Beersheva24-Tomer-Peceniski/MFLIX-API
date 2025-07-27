@@ -49,7 +49,7 @@ jobs:
 
             docker stop mflix || true
             docker rm mflix || true
-            docker build -t mflix-api .
+            docker build -t mflix-api ./server
             PORT=$(grep PORT .env | cut -d '=' -f2)
             docker run -d -p $PORT:$PORT --env-file .env --name mflix mflix-api
           EOF
