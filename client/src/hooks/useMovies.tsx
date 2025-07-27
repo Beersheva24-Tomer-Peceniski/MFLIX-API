@@ -1,34 +1,31 @@
-import { useState, useEffect } from 'react'
-import apiClient from '../services/ApiClient'
-import type Movie from '../models/Movie'
-import { useMovieFilters } from '../state-management/movieFilters'
+import { useMovieFilters } from '../state-management/movieFilters';
+import { useMoviesQuery } from '../services/CacheClient';
+import type { AxiosError } from 'axios';
+
+function extractErrorMessage(error: unknown): string | null {
+  if (!error) return null;
+  // Axios error
+  if (typeof error === 'object' && error !== null && 'isAxiosError' in error) {
+    const axiosError = error as AxiosError<any>;
+    return (
+      axiosError.response?.data?.error ||
+      axiosError.message ||
+      'Something went wrong'
+    );
+  }
+  // Fallback
+  if (error instanceof Error) return error.message;
+  return String(error);
+}
 
 export default function useMovies() {
-    const [movies, setMovies] = useState<Movie[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
-    
-    // Get filters from Zustand store
-    const { movieTitle, year, getQueryParams } = useMovieFilters();
+  const { getQueryParams } = useMovieFilters();
+  const filters = getQueryParams();
+  const { data, isLoading, error } = useMoviesQuery(undefined, undefined, filters);
 
-    useEffect(() => {
-        const getMovies = async () => {
-            setLoading(true);
-            setError(null);
-            try {
-                const filters = getQueryParams();
-                const response = await apiClient.getMovies(undefined, undefined, filters);
-                setMovies(response.data.movies);
-            } catch (err: any) {
-                const newError = err.response?.data?.error || err.message || 'Something went wrong';
-                setError(newError);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        getMovies();
-    }, [movieTitle, year]); // Only depend on the actual filter values
-
-    return { movies, loading, error }
+  return {
+    movies: data?.movies || [],
+    loading: isLoading,
+    error: extractErrorMessage(error),
+  };
 }
