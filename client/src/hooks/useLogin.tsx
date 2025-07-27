@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../services/ApiClient';
+import { useUserData } from '../state-management/user';
 
 export interface LoginError {
   emailError: string | null;
@@ -20,6 +21,7 @@ function useLogin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<LoginError>(initialError);
   const navigate = useNavigate();
+  const setToken = useUserData(state => state.setToken);
 
   async function login() {
     setLoading(true);
@@ -28,8 +30,8 @@ function useLogin() {
       const response = await apiClient.login({ email, password });
       const token = response.data.token;
 
-      // Token returned → store it and navigate
-      localStorage.setItem('token', token);
+      // Token returned → store it using zustand and navigate
+      setToken(token);
       navigate('/');
     } catch (err: any) {
       let newError: LoginError = { ...initialError };
