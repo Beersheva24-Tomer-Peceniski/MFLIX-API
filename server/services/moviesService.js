@@ -33,8 +33,8 @@ class MovieService {
         return await movieRepository.addRate(rateInfo);
     }
 
-    async getPaginated(page, limit) {
-        return await movieRepository.getPaginated(page, limit);
+    async getPaginated(page, limit, filters = {}) {
+        return await movieRepository.getPaginated(page, limit, filters);
     }
 }
 

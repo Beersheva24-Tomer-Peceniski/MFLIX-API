@@ -13,8 +13,10 @@ movieRoute.get("/", auth(authRules.movies.get), async (req, res) => {
 
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
+    const year = req.query.year ? parseInt(req.query.year) : null;
+    const movieTitle = req.query.movieTitle || null;
 
-    const result = await movieService.getPaginated(page, limit);
+    const result = await movieService.getPaginated(page, limit, { year, movieTitle });
     res.send(result);
 });
 

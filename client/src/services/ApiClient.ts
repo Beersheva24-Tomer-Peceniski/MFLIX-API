@@ -25,9 +25,16 @@ class ApiClient {
     return axios.post<{ token: string }>('/api/accounts/login', loginData); // separate login (no token)
   }
 
-  getMovies(page?: number, limit?: number) {
+  getMovies(page?: number, limit?: number, filters?: { movieTitle?: string; year?: string }) {
+    const params: any = {};
+    
+    if (page) params.page = page;
+    if (limit) params.limit = limit;
+    if (filters?.movieTitle) params.movieTitle = filters.movieTitle;
+    if (filters?.year) params.year = filters.year;
+
     return this.axiosInstance.get<Pagination>('/movies', {
-      params: { page, limit },
+      params,
     });
   }
 

@@ -93,12 +93,23 @@ class MovieRepository {
         return modifiedCount;
     }
 
-    async getPaginated(page, limit) {
+    async getPaginated(page, limit, filters = {}) {
         const moviesCollection = db.collection("movies");
 
         const skip = (page - 1) * limit;
 
-        const movies = await moviesCollection.find({})
+        // Build query based on filters
+        const query = {};
+        
+        if (filters.year) {
+            query.year = filters.year;
+        }
+        
+        if (filters.movieTitle) {
+            query.title = { $regex: filters.movieTitle, $options: 'i' };
+        }
+
+        const movies = await moviesCollection.find(query)
             .project({
                 _id: 1,
                 title: 1,
@@ -113,7 +124,7 @@ class MovieRepository {
             .limit(limit)
             .toArray();
 
-        const total = await moviesCollection.countDocuments();
+        const total = await moviesCollection.countDocuments(query);
 
         return {
             page,

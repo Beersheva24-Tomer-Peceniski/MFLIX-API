@@ -1,6 +1,7 @@
 import { Outlet, useLocation, Navigate } from 'react-router-dom';
 import { Box } from '@mui/material';
 import Header from '../../components/Header';
+import SideNav from '../../components/SideNav';
 import { useUserData } from '../../state-management/user';
 
 export default function Layout() {
@@ -38,8 +39,8 @@ export default function Layout() {
         <Header/>
       </Box>
 
-      <Box gridRow="2" gridColumn="1" bgcolor="#111" color="#fff" p={2}>
-        Side Nav
+      <Box gridRow="2" gridColumn="1" bgcolor="#111" color="#fff">
+        <SideNav />
       </Box>
 
       <Box gridRow="2" gridColumn="2" p={2} bgcolor="#f5f5f5">
