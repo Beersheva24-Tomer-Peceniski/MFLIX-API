@@ -8,7 +8,7 @@ class ApiClient {
 
   constructor() {
     this.axiosInstance = axios.create({
-      baseURL: "/api", // Use Vite proxy for dev
+      baseURL: import.meta.env.VITE_API_BASE_URL
     });
 
     // Automatically attach token from localStorage
@@ -21,9 +21,9 @@ class ApiClient {
     });
   }
 
-  login(loginData: Login) {
-    return axios.post<{ token: string }>('/api/accounts/login', loginData); // separate login (no token)
-  }
+login(loginData: Login) {
+  return this.axiosInstance.post<{ token: string }>('/accounts/login', loginData);
+}
 
   getMovies(page?: number, limit?: number, filters?: { movieTitle?: string; year?: string }) {
     const params: any = {};

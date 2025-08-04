@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import { configDotenv } from "dotenv";
 import movieRoute from "../routes/movieRoute.js";
 import appLogger from "../logger/appLogger.js";
@@ -11,8 +12,16 @@ import { authenticate } from "../middlewares/auth.js";
 
 configDotenv()
 const port = process.env.PORT || 4000;
+const isProduction = process.env.NODE_ENV === "production";
 
 const app = express();
+
+if (isProduction) {
+    app.use(cors({
+        origin: process.env.FRONTEND_URL,
+        credentials: true,
+    }));
+}
 
 app.use(express.json());
 app.use(requestLogger);

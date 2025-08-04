@@ -27,7 +27,6 @@ jobs:
           echo "Deploying to: ec2-user@${{ secrets.EC2_HOST }}"
           scp -o StrictHostKeyChecking=no -i ec2_key.pem build/app.tar.gz ec2-user@${{ secrets.EC2_HOST }}:/home/ec2-user/
 
-
       - name: Extract and deploy on EC2
         run: |
           ssh -o StrictHostKeyChecking=no -i ec2_key.pem ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
@@ -46,6 +45,7 @@ jobs:
             echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> .env
             echo "PROTECTED_USERS=${{ secrets.PROTECTED_USERS }}" >> .env
             echo "NODE_ENV=production" >> .env
+            echo "FRONTEND_URL=${{ secrets.FRONTEND_URL }}" >> .env   # 📌 Added line
 
             docker stop mflix || true
             docker rm mflix || true
