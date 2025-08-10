@@ -31,19 +31,50 @@ export default function Layout() {
 
   return (
     <Box
-      display="grid"
-      gridTemplateRows="50px 1fr"
-      gridTemplateColumns="270px 1fr"
+      sx={{
+        height: '100vh',
+        width: '100vw',
+        display: 'grid',
+        gridTemplateRows: '50px 1fr',
+        gridTemplateColumns: '270px 1fr',
+        overflow: 'hidden', 
+        position: 'fixed', 
+        top: 0,
+        left: 0
+      }}
     >
-      <Box gridColumn="1 / span 2" bgcolor="#333" color="#fff" display="flex" alignItems="center" justifyContent="center">
+      <Box 
+        gridColumn="1 / span 2" 
+        bgcolor="#333" 
+        color="#fff" 
+        display="flex" 
+        alignItems="center" 
+        justifyContent="center"
+        sx={{ overflow: 'hidden' }}
+      >
         <Header/>
       </Box>
 
-      <Box gridRow="2" gridColumn="1" bgcolor="#111" color="#fff">
+      <Box 
+        gridRow="2" 
+        gridColumn="1" 
+        bgcolor="#111" 
+        color="#fff"
+        sx={{ overflow: 'hidden' }}
+      >
         <SideNav />
       </Box>
 
-      <Box gridRow="2" gridColumn="2" p={2} bgcolor="#f5f5f5">
+      <Box 
+        gridRow="2" 
+        gridColumn="2" 
+        bgcolor="#f5f5f5"
+        sx={{ 
+          overflow: 'auto', // Only this area scrolls
+          height: '100%',
+          width: '100%'
+        }}
+      >
         <Outlet />
       </Box>
     </Box>
