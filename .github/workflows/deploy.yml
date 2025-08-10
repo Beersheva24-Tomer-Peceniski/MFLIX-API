@@ -17,13 +17,16 @@ jobs:
           echo "${{ secrets.EC2_KEY }}" > ec2_key.pem
           chmod 600 ec2_key.pem
 
-      - name: Compress project files (excluding .git)
+      - name: Compress project files (excluding .git, node_modules, build)
         run: |
+          # Create tar.gz in /tmp to avoid archiving itself
+          tar --exclude='.git' --exclude='node_modules' --exclude='build' \
+              -czf /tmp/app.tar.gz .
           mkdir -p build
-          tar --exclude='.git' -czf build/app.tar.gz .
+          mv /tmp/app.tar.gz build/app.tar.gz
 
       - name: Copy project to EC2
-        run: | 
+        run: |
           echo "Deploying to: ec2-user@${{ secrets.EC2_HOST }}"
           scp -o StrictHostKeyChecking=no -i ec2_key.pem build/app.tar.gz ec2-user@${{ secrets.EC2_HOST }}:/home/ec2-user/
 
@@ -45,7 +48,7 @@ jobs:
             echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> .env
             echo "PROTECTED_USERS=${{ secrets.PROTECTED_USERS }}" >> .env
             echo "NODE_ENV=production" >> .env
-            echo "FRONTEND_URL=${{ secrets.FRONTEND_URL }}" >> .env   # 📌 Added line
+            echo "FRONTEND_URL=${{ secrets.FRONTEND_URL }}" >> .env
 
             docker stop mflix || true
             docker rm mflix || true

@@ -38,7 +38,7 @@ export default function Header() {
             alignItems="center"
             p={2}
         >
-            <Avatar src={mflixLogo} />
+            <Avatar src={mflixLogo} variant="rounded"/>
 
             <Box position="relative">
                 <Avatar 

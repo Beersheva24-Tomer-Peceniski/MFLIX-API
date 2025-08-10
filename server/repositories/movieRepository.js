@@ -109,6 +109,10 @@ class MovieRepository {
             query.title = { $regex: filters.movieTitle, $options: 'i' };
         }
 
+        // Build sort object based on sortOrder
+        const sortOrder = filters.sortOrder === 'asc' ? 1 : -1; // 1 for ascending, -1 for descending
+        const sort = { year: sortOrder };
+
         const movies = await moviesCollection.find(query)
             .project({
                 _id: 1,
@@ -120,6 +124,7 @@ class MovieRepository {
                 year: 1,
                 fullplot: 1
             })
+            .sort(sort)
             .skip(skip)
             .limit(limit)
             .toArray();

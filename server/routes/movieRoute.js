@@ -15,8 +15,9 @@ movieRoute.get("/", auth(authRules.movies.get), async (req, res) => {
     const limit = parseInt(req.query.limit) || 20;
     const year = req.query.year ? parseInt(req.query.year) : null;
     const movieTitle = req.query.movieTitle || null;
+    const sortOrder = req.query.sortOrder || 'desc';
 
-    const result = await movieService.getPaginated(page, limit, { year, movieTitle });
+    const result = await movieService.getPaginated(page, limit, { year, movieTitle, sortOrder });
     res.send(result);
 });
 

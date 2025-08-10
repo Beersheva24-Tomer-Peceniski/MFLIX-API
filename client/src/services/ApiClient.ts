@@ -29,13 +29,14 @@ class ApiClient {
     return this.axiosInstance.post<{ token: string }>('/accounts/user', signupData);
   }
 
-  getMovies(page?: number, limit?: number, filters?: { movieTitle?: string; year?: string }) {
+  getMovies(page?: number, limit?: number, filters?: { movieTitle?: string; year?: string; sortOrder?: string }) {
     const params: any = {};
     
     if (page) params.page = page;
     if (limit) params.limit = limit;
     if (filters?.movieTitle) params.movieTitle = filters.movieTitle;
     if (filters?.year) params.year = filters.year;
+    if (filters?.sortOrder) params.sortOrder = filters.sortOrder;
 
     return this.axiosInstance.get<Pagination>('/movies', {
       params,

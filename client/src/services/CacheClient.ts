@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import apiClient from "./ApiClient";
 import type Pagination from "../models/Pagination";
 
-export function useMoviesQuery(page?: number, limit?: number, filters?: { movieTitle?: string; year?: string }) {
+export function useMoviesQuery(page?: number, limit?: number, filters?: { movieTitle?: string; year?: string; sortOrder?: string }) {
   return useQuery<Pagination, Error>({
     queryKey: ['movies', page, limit, filters],
     queryFn: async () => {

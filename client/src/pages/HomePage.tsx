@@ -24,7 +24,7 @@ export default function HomePage() {
       >
         {movies.length > 0 ? (
           movies.map((m: Movie) => (
-            <Grid size={{ xs: 12, sm: 6, md: 3 }} key={m._id}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={m._id}>
               <MovieCard movie={m} />
             </Grid>
           ))
