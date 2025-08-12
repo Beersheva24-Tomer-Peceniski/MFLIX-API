@@ -28,7 +28,7 @@ export default function useMovies() {
     fetchNextPage, 
     hasNextPage, 
     isFetchingNextPage 
-  } = useMoviesQuery(undefined, undefined, filters);
+  } = useMoviesQuery(undefined, filters);
 
   // Flatten all pages into a single array of movies
   const movies = data?.pages.flatMap(page => page.movies) || [];

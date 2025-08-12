@@ -4,7 +4,6 @@ class CommentRepository {
     async getByMovieId(movieId) {
         const commentsCollection = db.collection("comments");
         return commentsCollection.find({ movie_id: movieId })
-            .project({ email: 1, text: 1, _id: 0 })
             .toArray();
     }
 

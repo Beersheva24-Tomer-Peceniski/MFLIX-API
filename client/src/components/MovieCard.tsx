@@ -4,11 +4,27 @@ import fallback from '../assets/no-poster.png'
 
 interface MovieCardProps {
   movie: Movie;
+  onClick: (movie: Movie) => void;
 }
 
-export default function MovieCard({ movie }: MovieCardProps) {
+export default function MovieCard({ movie, onClick }: MovieCardProps) {
   return (
-    <Card sx={{ width: '100%', minHeight: 380, display: 'flex', flexDirection: 'column', m: 1 }}>
+    <Card 
+      sx={{ 
+        width: '100%', 
+        minHeight: 380, 
+        display: 'flex', 
+        flexDirection: 'column', 
+        m: 1,
+        cursor: 'pointer',
+        transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+        '&:hover': {
+          transform: 'translateY(-4px)',
+          boxShadow: 8
+        }
+      }}
+      onClick={() => onClick(movie)}
+    >
       <CardMedia
         component="img"
         height="300"

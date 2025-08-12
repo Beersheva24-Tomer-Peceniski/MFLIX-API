@@ -2,6 +2,7 @@
 import axios, { type AxiosInstance } from "axios";
 import type {Login, Signup} from '../models/Login';
 import type Pagination from "../models/Pagination";
+import type Comment from "../models/Comment";
 
 class ApiClient {
   private axiosInstance: AxiosInstance;
@@ -41,6 +42,10 @@ class ApiClient {
     return this.axiosInstance.get<Pagination>('/movies', {
       params,
     });
+  }
+
+  getCommentsByMovieId(movieId: string) {
+    return this.axiosInstance.get<Comment[]>(`/comments?movieId=${movieId}`);
   }
 
   // ... other methods here

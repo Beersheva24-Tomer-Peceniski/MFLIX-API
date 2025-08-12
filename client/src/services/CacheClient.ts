@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import apiClient from "./ApiClient";
 
-export function useMoviesQuery(page?: number, limit?: number, filters?: { movieTitle?: string; year?: string; sortOrder?: string }) {
+export function useMoviesQuery(limit?: number, filters?: { movieTitle?: string; year?: string; sortOrder?: string }) {
   return useInfiniteQuery({
     queryKey: ['movies', filters],
     queryFn: async ({ pageParam = 1 }) => {

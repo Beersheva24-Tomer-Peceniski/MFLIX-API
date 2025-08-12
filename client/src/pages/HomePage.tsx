@@ -3,8 +3,9 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 import MovieCard from "../components/MovieCard";
+import MovieExploration from "../components/MovieExploration";
 import useMovies from "../hooks/useMovies";
 import type Movie from "../models/Movie";
 import notFoundImg from "../assets/not-found.png";
@@ -18,6 +19,8 @@ export default function HomePage() {
     isFetchingNextPage, 
     fetchNextPage 
   } = useMovies();
+  
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   
   const observerRef = useRef<IntersectionObserver | null>(null);
   const lastMovieElementRef = useRef<HTMLDivElement | null>(null);
@@ -53,6 +56,14 @@ export default function HomePage() {
     }
   };
 
+  const handleMovieClick = (movie: Movie) => {
+    setSelectedMovie(movie);
+  };
+
+  const handleCloseMovieExploration = () => {
+    setSelectedMovie(null);
+  };
+
   return (
     <Box sx={{ width: '100%', height: '100%' }}>
       <Grid
@@ -70,13 +81,13 @@ export default function HomePage() {
             if (index === movies.length - 1 && hasNextPage) {
               return (
                 <Grid size={{ xs: 12, sm: 6, md: 4 }} key={m._id} ref={lastMovieRef}>
-                  <MovieCard movie={m} />
+                  <MovieCard movie={m} onClick={handleMovieClick} />
                 </Grid>
               );
             }
             return (
               <Grid size={{ xs: 12, sm: 6, md: 4 }} key={m._id}>
-                <MovieCard movie={m} />
+                <MovieCard movie={m} onClick={handleMovieClick} />
               </Grid>
             );
           })
@@ -165,6 +176,13 @@ export default function HomePage() {
             {error}
           </Typography>
         </Box>
+      )}
+
+      {selectedMovie && (
+        <MovieExploration
+          movie={selectedMovie}
+          onClose={handleCloseMovieExploration}
+        />
       )}
     </Box>
   );
