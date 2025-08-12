@@ -21,11 +21,24 @@ function extractErrorMessage(error: unknown): string | null {
 export default function useMovies() {
   const { getQueryParams } = useMovieFilters();
   const filters = getQueryParams();
-  const { data, isLoading, error } = useMoviesQuery(undefined, undefined, filters);
+  const { 
+    data, 
+    isLoading, 
+    error, 
+    fetchNextPage, 
+    hasNextPage, 
+    isFetchingNextPage 
+  } = useMoviesQuery(undefined, undefined, filters);
+
+  // Flatten all pages into a single array of movies
+  const movies = data?.pages.flatMap(page => page.movies) || [];
 
   return {
-    movies: data?.movies || [],
+    movies,
     loading: isLoading,
     error: extractErrorMessage(error),
+    hasNextPage: hasNextPage || false,
+    isFetchingNextPage,
+    fetchNextPage,
   };
 }

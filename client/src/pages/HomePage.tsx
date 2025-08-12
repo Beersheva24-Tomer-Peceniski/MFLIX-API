@@ -2,13 +2,56 @@ import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import { useEffect, useRef, useCallback } from "react";
 import MovieCard from "../components/MovieCard";
 import useMovies from "../hooks/useMovies";
 import type Movie from "../models/Movie";
 import notFoundImg from "../assets/not-found.png";
 
 export default function HomePage() {
-  const { movies, loading, error } = useMovies();
+  const { 
+    movies, 
+    loading, 
+    error, 
+    hasNextPage, 
+    isFetchingNextPage, 
+    fetchNextPage 
+  } = useMovies();
+  
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const lastMovieElementRef = useRef<HTMLDivElement | null>(null);
+
+  const lastMovieRef = useCallback((node: HTMLDivElement | null) => {
+    if (loading) return;
+    
+    if (observerRef.current) observerRef.current.disconnect();
+    
+    observerRef.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      }
+    });
+    
+    if (node) {
+      observerRef.current.observe(node);
+      lastMovieElementRef.current = node;
+    }
+  }, [loading, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  useEffect(() => {
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, []);
+
+  const handleLoadMore = () => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  };
 
   return (
     <Box sx={{ width: '100%', height: '100%' }}>
@@ -23,11 +66,20 @@ export default function HomePage() {
         }}
       >
         {movies.length > 0 ? (
-          movies.map((m: Movie) => (
-            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={m._id}>
-              <MovieCard movie={m} />
-            </Grid>
-          ))
+          movies.map((m: Movie, index: number) => {
+            if (index === movies.length - 1 && hasNextPage) {
+              return (
+                <Grid size={{ xs: 12, sm: 6, md: 4 }} key={m._id} ref={lastMovieRef}>
+                  <MovieCard movie={m} />
+                </Grid>
+              );
+            }
+            return (
+              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={m._id}>
+                <MovieCard movie={m} />
+              </Grid>
+            );
+          })
         ) : !loading && !error ? (
           <Grid
             size={12}
@@ -65,6 +117,29 @@ export default function HomePage() {
           </Grid>
         ) : null}
       </Grid>
+
+      {hasNextPage && !loading && (
+        <Box sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '100%',
+          paddingY: 3
+        }}>
+          <Button
+            variant="outlined"
+            onClick={handleLoadMore}
+            disabled={isFetchingNextPage}
+            sx={{ minWidth: '120px' }}
+          >
+            {isFetchingNextPage ? (
+              <CircularProgress size={20} />
+            ) : (
+              'Load More'
+            )}
+          </Button>
+        </Box>
+      )}
 
       {loading && (
         <Box sx={{
