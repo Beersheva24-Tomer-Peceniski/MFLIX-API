@@ -5,7 +5,7 @@ import {
   Paper,
   CircularProgress
 } from '@mui/material';
-import type Comment from '../models/Comment';
+import type { Comment } from '../models/Comment';
 import { formatDate, getInitials } from '../utils/commentUtils';
 
 interface CommentListProps {

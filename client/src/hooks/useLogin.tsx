@@ -29,6 +29,8 @@ function useLogin() {
   const [error, setError] = useState<LoginError>(initialError);
   const navigate = useNavigate();
   const setToken = useUserData(state => state.setToken);
+  const setUserEmail = useUserData(state => state.setEmail);
+  const setUserName = useUserData(state => state.setName);
 
   async function login() {
     setLoading(true);
@@ -39,6 +41,7 @@ function useLogin() {
 
       // Token returned → store it using zustand and navigate
       setToken(token);
+      setUserEmail(email);
       navigate('/');
     } catch (err: any) {
       let newError: LoginError = { ...initialError };
@@ -84,6 +87,8 @@ function useLogin() {
       const token = response.data.token;
       // Token returned → store it using zustand and navigate
       setToken(token);
+      setUserEmail(email);
+      setUserName(name);
       navigate('/');
     } catch (err: any) {
       let newError: LoginError = { ...initialError };

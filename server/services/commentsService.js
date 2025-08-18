@@ -24,7 +24,8 @@ class CommentService {
     }
 
     async add(comment) {
-        comment.movieId = new ObjectId(comment.movieId);
+        comment.movie_id = new ObjectId(comment.movieId);
+        delete comment.movieId;
         comment.date = DateTime.utc().toFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZ");
         const newComment = await commentRepository.add(comment);
         movieRepository.addCommentsNumber(comment.movieId);

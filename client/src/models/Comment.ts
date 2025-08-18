@@ -1,8 +1,10 @@
-export default interface Comment {
+export interface Comment {
   _id: string;
   name: string;
   email: string;
-  movie_id: string;
+  movieId: string;
   text: string;
   date: string;
 }
+
+export type NewComment = Omit<Comment, "_id" | "date">;

@@ -27,7 +27,7 @@ const authRules = {
         },
         post: {
             authentication: req => "jwt",
-            authorization: req => req.role == "PREMIUM_USER"
+            authorization: req => req.role !== "ADMIN"
         },
         put: {
             authentication: req => "jwt",

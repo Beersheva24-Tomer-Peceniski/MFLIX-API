@@ -7,8 +7,13 @@ interface UserData {
     role: string | null;
     setRole: (role: string) => void;
     resetRole: () => void;
+    email: string | null;
+    setEmail: (email: string) => void;
+    resetEmail: () => void;
+    name: string | null;
+    setName: (name: string) => void;
+    resetName: () => void;
 }
-
 
 export const useUserData = create<UserData>(set => ({
     token: localStorage.getItem("token"),
@@ -28,5 +33,23 @@ export const useUserData = create<UserData>(set => ({
     resetRole: () => {
         localStorage.removeItem("role");
         set({ role: null });
+    },
+    email: localStorage.getItem("email"),
+    setEmail: (email) => {
+        localStorage.setItem("email", email);
+        set({ email });
+    },
+    resetEmail: () => {
+        localStorage.removeItem("email");
+        set({ email: null });
+    },
+    name: localStorage.getItem("name"),
+    setName: (name) => {
+        localStorage.setItem("name", name);
+        set({ name });
+    },
+    resetName: () => {
+        localStorage.removeItem("name");
+        set({ name: null });
     },
 }))

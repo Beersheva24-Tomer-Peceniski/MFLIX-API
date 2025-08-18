@@ -1,8 +1,8 @@
 // services/ApiClient.ts
 import axios, { type AxiosInstance } from "axios";
-import type {Login, Signup} from '../models/Login';
+import type { Login, Signup } from '../models/Login';
 import type Pagination from "../models/Pagination";
-import type Comment from "../models/Comment";
+import type { Comment, NewComment } from "../models/Comment";
 
 class ApiClient {
   private axiosInstance: AxiosInstance;
@@ -32,7 +32,7 @@ class ApiClient {
 
   getMovies(page?: number, limit?: number, filters?: { movieTitle?: string; year?: string; sortOrder?: string }) {
     const params: any = {};
-    
+
     if (page) params.page = page;
     if (limit) params.limit = limit;
     if (filters?.movieTitle) params.movieTitle = filters.movieTitle;
@@ -48,7 +48,9 @@ class ApiClient {
     return this.axiosInstance.get<Comment[]>(`/comments?movieId=${movieId}`);
   }
 
-  // ... other methods here
+  postComment(comment: NewComment) {
+    return this.axiosInstance.post<Comment>('/comments', comment);
+  }
 }
 
 const apiClient = new ApiClient();

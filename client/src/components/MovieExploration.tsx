@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -6,13 +6,18 @@ import {
   IconButton,
   Divider,
   Chip,
-  Rating
+  Rating,
+  TextField,
+  Button,
+  Alert
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import SendIcon from '@mui/icons-material/Send';
 import type Movie from '../models/Movie';
 import useComments from '../hooks/useComments';
 import CommentList from './CommentList';
 import fallback from '../assets/no-poster.png';
+import { useUserData } from '../state-management/user';
 
 interface MovieExplorationProps {
   movie: Movie;
@@ -20,11 +25,45 @@ interface MovieExplorationProps {
 }
 
 export default function MovieExploration({ movie, onClose }: MovieExplorationProps) {
-  const { comments, loading, error, hasComments } = useComments(movie._id);
+  const { comments, loading, error, hasComments, addComment, postingComment } = useComments(movie._id);
+  const [commentText, setCommentText] = useState('');
+  const [commentError, setCommentError] = useState<string | null>(null);
+  const userEmail = useUserData(state => state.email);
+  const userName = useUserData(state => state.name);
 
   const handleBackdropClick = (event: React.MouseEvent) => {
     if (event.target === event.currentTarget) {
       onClose();
+    }
+  };
+
+  const handleSubmitComment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!commentText.trim()) {
+      setCommentError('Comment cannot be empty');
+      return;
+    }
+
+    try {
+      setCommentError(null);
+      
+      if (!userEmail || !userName) {
+        setCommentError('Please log in to post comments');
+        return;
+      }
+      
+      await addComment({
+        name: userName,
+        email: userEmail,
+        movieId: movie._id,
+        text: commentText.trim()
+      });
+      
+      // Clear the form after successful submission
+      setCommentText('');
+    } catch (err) {
+      setCommentError('Failed to post comment. Please try again.');
     }
   };
 
@@ -157,6 +196,51 @@ export default function MovieExploration({ movie, onClose }: MovieExplorationPro
             </Typography>
             
             <Divider sx={{ mb: 2 }} />
+
+            {/* Comment Input Form */}
+            <Box component="form" onSubmit={handleSubmitComment} sx={{ mb: 3 }}>
+              {commentError && (
+                <Alert severity="error" sx={{ mb: 2 }}>
+                  {commentError}
+                </Alert>
+              )}
+              
+              {!userEmail || !userName ? (
+                <Alert severity="info" sx={{ mb: 2 }}>
+                  Please log in to post comments
+                </Alert>
+              ) : (
+                <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
+                  <TextField
+                    fullWidth
+                    multiline
+                    rows={3}
+                    placeholder="Write your comment here..."
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                    variant="outlined"
+                    size="small"
+                    disabled={postingComment}
+                    sx={{ flex: 1 }}
+                  />
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    disabled={!commentText.trim() || postingComment}
+                    startIcon={<SendIcon />}
+                    sx={{ 
+                      minWidth: 'auto',
+                      px: 2,
+                      py: 1.5,
+                      height: 'fit-content'
+                    }}
+                  >
+                    {postingComment ? 'Posting...' : 'Post'}
+                  </Button>
+                </Box>
+              )}
+            </Box>
 
             <CommentList
               comments={comments}
