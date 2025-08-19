@@ -1,6 +1,6 @@
 // services/ApiClient.ts
 import axios, { type AxiosInstance } from "axios";
-import type { Login, Signup } from '../models/Login';
+import type { Login, Signup, LoginResponse } from '../models/Login';
 import type Pagination from "../models/Pagination";
 import type { Comment, NewComment } from "../models/Comment";
 
@@ -23,11 +23,11 @@ class ApiClient {
   }
 
   login(loginData: Login) {
-    return this.axiosInstance.post<{ token: string }>('/accounts/login', loginData);
+    return this.axiosInstance.post<LoginResponse>('/accounts/login', loginData);
   }
 
   signup(signupData: Signup) {
-    return this.axiosInstance.post<{ token: string }>('/accounts/user', signupData);
+    return this.axiosInstance.post<{ _id: string; email: string; name: string; role: string; blocked: boolean }>('/accounts/user', signupData);
   }
 
   getMovies(page?: number, limit?: number, filters?: { movieTitle?: string; year?: string; sortOrder?: string }) {

@@ -41,8 +41,8 @@ accountRoute.post("/admin", auth(authRules.account.post), validator(accountSchem
 accountRoute.post("/login", validator(accountSchemas.loginSchema), async (req, res, next) => {
     appLogger.info("Login requested");
     try {
-        const token = await accountService.login(req.body)
-        res.send({ token })
+        const loginResult = await accountService.login(req.body)
+        res.send(loginResult)
     } catch (error) {
         next(error)
     }

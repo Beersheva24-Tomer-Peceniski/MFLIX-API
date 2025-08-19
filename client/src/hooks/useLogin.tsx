@@ -31,17 +31,20 @@ function useLogin() {
   const setToken = useUserData(state => state.setToken);
   const setUserEmail = useUserData(state => state.setEmail);
   const setUserName = useUserData(state => state.setName);
+  const setUserRole = useUserData(state => state.setRole);
 
   async function login() {
     setLoading(true);
     setError(initialError);
     try {
       const response = await apiClient.login({ email, password });
-      const token = response.data.token;
+      const { token, user } = response.data;
 
-      // Token returned → store it using zustand and navigate
+      // Store token and user data using zustand and navigate
       setToken(token);
-      setUserEmail(email);
+      setUserEmail(user.email);
+      setUserName(user.name);
+      setUserRole(user.role);
       navigate('/');
     } catch (err: any) {
       let newError: LoginError = { ...initialError };
@@ -84,11 +87,12 @@ function useLogin() {
     try {
       await apiClient.signup({ email, password, name});
       const response = await apiClient.login({ email, password });
-      const token = response.data.token;
-      // Token returned → store it using zustand and navigate
+      const { token, user } = response.data;
+      // Store token and user data using zustand and navigate
       setToken(token);
-      setUserEmail(email);
-      setUserName(name);
+      setUserEmail(user.email);
+      setUserName(user.name);
+      setUserRole(user.role);
       navigate('/');
     } catch (err: any) {
       let newError: LoginError = { ...initialError };

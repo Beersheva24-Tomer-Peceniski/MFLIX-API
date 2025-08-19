@@ -116,7 +116,14 @@ class AccountService {
         if(account.blocked) {
             throw createError(400, "Inserted account is blocked")
         }
-        return JwtUtil.getJwt(account);
+        return {
+            token: JwtUtil.getJwt(account),
+            user: {
+                email: account.email,
+                name: account.name,
+                role: account.role
+            }
+        };
     }
 
     isBlocked(email) {
