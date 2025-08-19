@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -25,11 +25,27 @@ interface MovieExplorationProps {
 }
 
 export default function MovieExploration({ movie, onClose }: MovieExplorationProps) {
-  const { comments, loading, error, hasComments, addComment, postingComment } = useComments(movie._id);
+  const { 
+    comments, 
+    loading, 
+    error, 
+    hasComments, 
+    addComment, 
+    postingComment, 
+    mutationError, 
+    isError, 
+    resetMutationError 
+  } = useComments(movie._id);
   const [commentText, setCommentText] = useState('');
-  const [commentError, setCommentError] = useState<string | null>(null);
   const userEmail = useUserData(state => state.email);
   const userName = useUserData(state => state.name);
+
+  // Clear mutation error when user starts typing
+  useEffect(() => {
+    if (commentText.length > 0 && mutationError) {
+      resetMutationError();
+    }
+  }, [commentText, mutationError, resetMutationError]);
 
   const handleBackdropClick = (event: React.MouseEvent) => {
     if (event.target === event.currentTarget) {
@@ -41,17 +57,16 @@ export default function MovieExploration({ movie, onClose }: MovieExplorationPro
     e.preventDefault();
     
     if (!commentText.trim()) {
-      setCommentError('Comment cannot be empty');
-      return;
+      return; // Don't submit empty comments
     }
 
+    if (!userEmail || !userName) {
+      return; // User should be logged in to reach this point
+    }
+    
     try {
-      setCommentError(null);
-      
-      if (!userEmail || !userName) {
-        setCommentError('Please log in to post comments');
-        return;
-      }
+      // Reset any previous mutation errors
+      resetMutationError();
       
       await addComment({
         name: userName,
@@ -63,7 +78,8 @@ export default function MovieExploration({ movie, onClose }: MovieExplorationPro
       // Clear the form after successful submission
       setCommentText('');
     } catch (err) {
-      setCommentError('Failed to post comment. Please try again.');
+      // Error is handled by the mutation error state
+      console.error('Comment submission error:', err);
     }
   };
 
@@ -199,9 +215,9 @@ export default function MovieExploration({ movie, onClose }: MovieExplorationPro
 
             {/* Comment Input Form */}
             <Box component="form" onSubmit={handleSubmitComment} sx={{ mb: 3 }}>
-              {commentError && (
+              {mutationError && (
                 <Alert severity="error" sx={{ mb: 2 }}>
-                  {commentError}
+                  {mutationError}
                 </Alert>
               )}
               
@@ -222,6 +238,8 @@ export default function MovieExploration({ movie, onClose }: MovieExplorationPro
                     size="small"
                     disabled={postingComment}
                     sx={{ flex: 1 }}
+                    error={!commentText.trim() && commentText.length > 0}
+                    helperText={!commentText.trim() && commentText.length > 0 ? 'Comment cannot be empty' : ''}
                   />
                   <Button
                     type="submit"
